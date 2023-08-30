@@ -1,0 +1,15 @@
+.availability-circle {
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+  border-radius: 50%;
+  content: " ";
+
+  &.available {
+    background-color: #55a630;
+  }
+
+  &.unavailable {
+    background-color: #d90429;
+  }
+}
