@@ -1,6 +1,5 @@
 import React from "react";
 import RoomList from "../../RoomList/RoomList";
-import DatePicker from "../../Form/Fields/DatePicker";
 
 import "./RoomColumn.scss";
 import MeetingTimePicker from "../../MeetingTimePicker/MeetingTimePicker";

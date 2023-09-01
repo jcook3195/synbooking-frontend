@@ -1,6 +1,6 @@
 import React from "react";
 
-import DatePicker from "../Form/Fields/DatePicker";
+import DatePicker from "../Form/Fields/DatePicker/DatePicker";
 
 import "./MeetingTimePicker.scss";
 

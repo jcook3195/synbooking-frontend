@@ -7,17 +7,15 @@ import "react-clock/dist/Clock.css";
 
 import "./DatePicker.scss";
 
-let ValuePiece = Date | null;
+// let ValuePiece = Date | null;
 
-let Value = ValuePiece | [ValuePiece, ValuePiece];
+// let Value = ValuePiece | [ValuePiece, ValuePiece];
 
 const DatePicker = () => {
   const [value, onChange] = useState(new Date());
 
   return (
-    <div>
-      <DateTimePicker onChange={onChange} value={value} disableClock={true} />
-    </div>
+    <DateTimePicker onChange={onChange} value={value} disableClock={true} />
   );
 };
 
