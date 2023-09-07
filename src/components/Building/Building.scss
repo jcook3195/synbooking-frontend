@@ -1,0 +1,139 @@
+#ex-map-container {
+  position: relative;
+  margin-bottom: 4rem;
+
+  #bldg-main {
+    width: 660px;
+    height: 800px;
+    max-width: 100%;
+    margin: auto;
+    margin-top: 4rem;
+    background-color: #fff;
+    border: 1px solid black;
+    color: #000;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    border: 3px solid #000;
+
+    .bldg-rooms {
+      position: relative;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #22333b;
+      color: #fff;
+
+      .building-room {
+        background-color: #55a630;
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.5rem;
+        position: absolute;
+
+        &:hover {
+          background-color: #55a630;
+          border: 2px solid #fff;
+        }
+
+        &.small {
+          width: 120px;
+          height: 120px;
+        }
+
+        &.large {
+          width: 120px;
+          height: 360px;
+        }
+
+        &.unavailable {
+          background-color: #d90429 !important;
+          border: none !important;
+
+          &:hover {
+            cursor: not-allowed !important;
+          }
+        }
+
+        &#room-a {
+          top: 0;
+          left: 0;
+        }
+
+        &#room-b {
+          top: 0;
+          left: 27%;
+        }
+
+        &#room-c {
+          top: 0;
+          right: 27%;
+        }
+
+        &#room-d {
+          top: 0;
+          right: 0;
+        }
+
+        &#room-e {
+          bottom: 0;
+          left: 0;
+        }
+
+        &#room-f {
+          bottom: 0;
+          left: 27%;
+        }
+
+        &#room-g {
+          bottom: 0;
+          right: 27%;
+        }
+
+        &#room-h {
+          bottom: 0;
+          right: 0;
+        }
+
+        &#room-i {
+          top: 28%;
+          left: 0;
+        }
+
+        &#room-j {
+          top: 28%;
+          right: 0;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  #ex-map-container {
+    a {
+      &.small {
+        width: 80px;
+        height: 80px;
+      }
+    }
+  }
+
+  #ex-map-container a.large {
+    a {
+      &.large {
+        width: 80px;
+        height: 240px;
+        top: 34% !important;
+      }
+    }
+  }
+}

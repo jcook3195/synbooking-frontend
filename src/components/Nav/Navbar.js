@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 
 import Button from "../UI/Button/Button";
 
+import { authActions } from "../../store/authStore";
+
 import "./Navbar.scss";
 
 const Navbar = () => {
@@ -14,11 +16,11 @@ const Navbar = () => {
   const loggedIn = useSelector((state) => state.loggedIn);
 
   const logoutHandler = () => {
-    dispatch({ type: "logout" });
+    dispatch(authActions.logout());
   };
 
   const loginHandler = () => {
-    dispatch({ type: "login" });
+    dispatch(authActions.login());
   };
 
   const handleOnClick = () => {

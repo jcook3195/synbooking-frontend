@@ -1,21 +1,20 @@
-import { createStore } from "redux";
+import { createSlice } from "@reduxjs/toolkit";
 
-const authReducer = (state = { loggedIn: false }, action) => {
-  if (action.type === "login") {
-    return {
-      loggedIn: true,
-    };
-  }
+const initialState = { loggedIn: false };
 
-  if (action.type === "logout") {
-    return {
-      loggedIn: false,
-    };
-  }
+const authSlice = createSlice({
+  name: "loggedIn",
+  initialState,
+  reducers: {
+    login(state) {
+      state.loggedIn = true;
+    },
+    logout(state) {
+      state.loggedIn = false;
+    },
+  },
+});
 
-  return state;
-};
+export const authActions = authSlice.actions;
 
-const authStore = createStore(authReducer);
-
-export default authStore;
+export default authSlice.reducer;
