@@ -7,6 +7,8 @@ import Form from "../components/Form/Form";
 import UserSelect from "../components/Form/Fields/UserSelect/UserSelect";
 import Button from "../components/UI/Button/Button";
 
+import { authActions } from "../store/authStore";
+
 const Landing = () => {
   const methods = useForm(); // initialize useform methods
   const navigate = useNavigate();
@@ -15,7 +17,7 @@ const Landing = () => {
   const dispatch = useDispatch();
 
   const loginHandler = () => {
-    dispatch({ type: "login" });
+    dispatch(authActions.login());
   };
 
   const users = ["Jordan", "Ethan", "Shelby", "Kado"];
