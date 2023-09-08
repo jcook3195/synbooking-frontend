@@ -2,6 +2,8 @@ import React from "react";
 
 import AvailabilityCircle from "../../UI/AvailabilityCircle/AvailabilityCircle";
 
+import "./RoomListItem.scss";
+
 const RoomsListItem = (props) => {
   return (
     <div id={"room-list-" + props.roomName} className="room-list-item">

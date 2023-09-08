@@ -22,6 +22,41 @@ const RoomList = () => {
         roomStatus="Open all day"
         roomAvailability="available"
       />
+      <RoomsListItem
+        roomName="d"
+        roomStatus="Open all day"
+        roomAvailability="available"
+      />
+      <RoomsListItem
+        roomName="e"
+        roomStatus="Open all day"
+        roomAvailability="available"
+      />
+      <RoomsListItem
+        roomName="f"
+        roomStatus="Open all day"
+        roomAvailability="available"
+      />
+      <RoomsListItem
+        roomName="g"
+        roomStatus="Open all day"
+        roomAvailability="available"
+      />
+      <RoomsListItem
+        roomName="h"
+        roomStatus="Open all day"
+        roomAvailability="available"
+      />
+      <RoomsListItem
+        roomName="i"
+        roomStatus="Open all day"
+        roomAvailability="available"
+      />
+      <RoomsListItem
+        roomName="j"
+        roomStatus="Open all day"
+        roomAvailability="available"
+      />
     </div>
   );
 };
