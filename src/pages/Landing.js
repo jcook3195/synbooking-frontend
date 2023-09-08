@@ -20,7 +20,7 @@ const Landing = () => {
     dispatch(authActions.login());
   };
 
-  const users = ["Jordan", "Ethan", "Shelby", "Kado"];
+  const users = ["Jordan", "Ethan", "Shelby", "Kado", "Eric"];
 
   const handleOnSubmit = (e) => {
     // get the value of the user selected in the drop down and use that value to get a matching user name from the array

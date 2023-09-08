@@ -1,16 +1,26 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 
 import Container from "../components/Layout/Container";
 import RoomColumn from "../components/Layout/RoomColumn/RoomColumn";
 import MapColumn from "../components/Layout/MapColumn/MapColumn";
+import AddMeetingModal from "../components/UI/Modal/AddMeetingModal/AddMeetingModal";
+import Button from "../components/UI/Button/Button";
+import CustomAlert from "../components/UI/Alert/CustomAlert";
+
+import { modalActions } from "../store/modalStore";
 
 const MeetingScheduler = (props) => {
   const navigate = useNavigate();
-  const roomsState = useSelector((state) => state.rooms);
-  const meetingsState = useSelector((state) => state.meetings);
+
+  // redux
+  const dispatch = useDispatch();
+
+  const roomsState = useSelector((state) => state.meetings.rooms);
+  const meetingsState = useSelector((state) => state.meetings.meetings);
+  const alertState = useSelector((state) => state.alerts.showAlert);
 
   const getRooms = async () => {
     const res = await axios
@@ -38,6 +48,10 @@ const MeetingScheduler = (props) => {
     return await res;
   };
 
+  const modalShowButtonClickHandler = () => {
+    dispatch(modalActions.showModal());
+  };
+
   useEffect(() => {
     // check if someone is logged in, if not then redirect
     const loggedInUser = localStorage.getItem("user");
@@ -47,14 +61,10 @@ const MeetingScheduler = (props) => {
       navigate("/landing");
     }
 
-    let rooms = getRooms();
-    let meetings = getMeetings();
+    // let rooms = getRooms();
+    // let meetings = getMeetings();
 
-    console.log("ROOMS");
-    console.log(rooms);
-
-    console.log("MEETINGS");
-    console.log(meetings);
+    console.log("ALERTS: " + alertState);
   });
 
   useEffect(() => {
@@ -72,8 +82,22 @@ const MeetingScheduler = (props) => {
   return (
     <div id="meeting-scheduler">
       <Container>
+        {alertState ? (
+          <CustomAlert type="success">Meeting succesfully added</CustomAlert>
+        ) : (
+          <></>
+        )}
+        <Button
+          type="button"
+          id="showModalButton"
+          classNames="btn-primary"
+          onClick={modalShowButtonClickHandler}
+        >
+          Show Modal
+        </Button>
         <RoomColumn />
         <MapColumn />
+        <AddMeetingModal />
       </Container>
     </div>
   );

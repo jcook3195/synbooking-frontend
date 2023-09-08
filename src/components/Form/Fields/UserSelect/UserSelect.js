@@ -22,6 +22,7 @@ const UserSelect = (props) => {
         <option value="2">Ethan</option>
         <option value="3">Shelby</option>
         <option value="4">Kado</option>
+        <option value="5">Eric</option>
       </select>
     </div>
   );
