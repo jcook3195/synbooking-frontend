@@ -13,7 +13,7 @@ const Navbar = () => {
 
   // redux
   const dispatch = useDispatch();
-  const loggedIn = useSelector((state) => state.loggedIn);
+  const loggedIn = useSelector((state) => state.auth.loggedIn);
 
   const logoutHandler = () => {
     dispatch(authActions.logout());
