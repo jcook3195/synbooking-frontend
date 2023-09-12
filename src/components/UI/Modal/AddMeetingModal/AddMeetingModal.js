@@ -18,19 +18,22 @@ const AddMeetingModal = () => {
   // redux
   const dispatch = useDispatch();
   const modalState = useSelector((state) => state.modals.showModal);
+  const selectedRoomState = useSelector((state) => state.meetings.selectedRoom);
 
   const modalHideHandler = () => {
     dispatch(modalActions.hideModal());
   };
 
-  const alertShowHandler = () => {
+  const alertShowHandler = (type, message) => {
     dispatch(alertActions.showAlert());
+    dispatch(alertActions.setAlertType(type));
+    dispatch(alertActions.setAlertMessage(message));
   };
 
-  const alertHideTimeout = () => {
+  const alertHideTimeout = (interval) => {
     setTimeout(() => {
       dispatch(alertActions.hideAlert());
-    }, 5000);
+    }, interval);
   };
 
   const handleFormSubmit = (e) => {
@@ -38,15 +41,18 @@ const AddMeetingModal = () => {
     const formFields = e.target;
 
     let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
+    let roomId = selectedRoomState;
     let meetingName = formFields[0].value;
     let meetingDescription = formFields[1].value;
     let startDateTime = formFields[2].value;
     let endDateTime = formFields[11].value;
     let attendees = formFields[20].value;
 
+    console.log(roomId);
+
     let data = JSON.stringify({
       user: loggedInUser,
-      room: "A",
+      room: roomId,
       title: meetingName,
       description: meetingDescription,
       startDateTime: startDateTime,
@@ -71,14 +77,16 @@ const AddMeetingModal = () => {
 
         // close the modal after meeting is added successfully
         modalHideHandler();
-        // show and hide alert after 5 secons
-        alertShowHandler();
-        alertHideTimeout();
+        // show and hide alert after 5 seconds
+        alertShowHandler("success", "Meeting was added successfully.");
+        alertHideTimeout(5000);
       })
       .catch((err) => {
         console.error(err);
+        alertShowHandler("danger", "There was an error adding a meeting.");
       });
   };
+
   return (
     <CustomModal
       heading="Add a Meeting"

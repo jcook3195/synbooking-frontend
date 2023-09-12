@@ -1,6 +1,5 @@
 .room-list-item {
   padding: 1rem;
-  transition: background-color 0.5s ease;
 
   p {
     margin-bottom: 0;
@@ -10,6 +9,16 @@
   &:hover,
   &.hovered {
     cursor: pointer;
-    background-color: #dedede;
+  }
+
+  .accordion-header {
+    .accordion-button {
+      &:focus,
+      &:not(.collapsed) {
+        background-color: #fff;
+        border: none;
+        box-shadow: none;
+      }
+    }
   }
 }
