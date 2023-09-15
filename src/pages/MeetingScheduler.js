@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
-import { useSelector } from "react-redux";
-// import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
 
 import Container from "../components/Layout/Container";
 import RoomColumn from "../components/Layout/RoomColumn/RoomColumn";
@@ -9,39 +9,18 @@ import MapColumn from "../components/Layout/MapColumn/MapColumn";
 import AddMeetingModal from "../components/UI/Modal/AddMeetingModal/AddMeetingModal";
 import CustomAlert from "../components/UI/Alert/CustomAlert";
 
+import { meetingActions } from "../store/meetingStore";
+
 const MeetingScheduler = () => {
   const navigate = useNavigate();
 
-  // const meetingsState = useSelector((state) => state.meetings.meetings);
+  const dispatch = useDispatch();
   const showAlertState = useSelector((state) => state.alerts.showAlert);
   const alertTypeState = useSelector((state) => state.alerts.alertType);
   const alertMessageState = useSelector((state) => state.alerts.alertMessage);
-
-  // const getRooms = async () => {
-  //   const res = await axios
-  //     .get("http://localhost:8080/rooms")
-  //     .then((res) => {
-  //       return res.data._embedded.rooms;
-  //     })
-  //     .catch((err) => {
-  //       return err;
-  //     });
-
-  //   return await res;
-  // };
-
-  // const getMeetings = async () => {
-  //   const res = await axios
-  //     .get("http://localhost:8080/meetings")
-  //     .then((res) => {
-  //       return res.data._embedded.meetings;
-  //     })
-  //     .catch((err) => {
-  //       return err;
-  //     });
-
-  //   return await res;
-  // };
+  const selectedMeetingDate = useSelector(
+    (state) => state.meetings.selectedMeetingDate
+  );
 
   useEffect(() => {
     // check if someone is logged in, if not then redirect
@@ -52,21 +31,26 @@ const MeetingScheduler = () => {
       navigate("/landing");
     }
 
-    // let rooms = getRooms();
-    // let meetings = getMeetings();
+    // grab all the meetings for the set date
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: "http://localhost:8080/meetings/" + selectedMeetingDate,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios
+      .request(config)
+      .then((res) => {
+        // console.log(JSON.stringify(res.data));
+        dispatch(meetingActions.setMeetings(res.data));
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   });
-
-  // useEffect(() => {
-  //   // get the rooms and meetings
-  //   let rooms = getRooms();
-  //   let meetings = getMeetings();
-
-  //   console.log("ROOMS2");
-  //   console.log(rooms);
-
-  //   console.log("MEETINGS2");
-  //   console.log(meetings);
-  // }, [meetingsState]);
 
   return (
     <div id="meeting-scheduler">

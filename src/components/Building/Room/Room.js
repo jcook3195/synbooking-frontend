@@ -9,7 +9,6 @@ const Room = (props) => {
 
   const onClickHandler = (e) => {
     e.preventDefault();
-    console.log(props.name);
 
     dispatch(meetingActions.setSelectedRoom(props.name));
   };

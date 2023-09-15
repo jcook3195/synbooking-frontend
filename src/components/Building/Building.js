@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 
 import Room from "./Room/Room";
@@ -7,17 +7,7 @@ import "./Building.scss";
 
 const Building = () => {
   // redux
-  const roomsState = useSelector((state) => state.meetings.newRooms);
-
-  useEffect(() => {
-    console.log(roomsState);
-
-    // Object.entries(
-    //   roomsState.map((entry) => {
-    //     console.log("entry", entry);
-    //   })
-    // );
-  });
+  const roomsState = useSelector((state) => state.meetings.rooms);
 
   return (
     <div id="ex-map-container">
@@ -34,6 +24,7 @@ const Building = () => {
                 size={entry[1]["size"]}
                 availability={availability}
                 roomId={entry[1]["id"]}
+                key={entry[1]["id"]}
               />
             );
           })}
