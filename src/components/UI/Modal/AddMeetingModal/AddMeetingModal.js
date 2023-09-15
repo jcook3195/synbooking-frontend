@@ -6,11 +6,12 @@ import CustomModal from "../CustomModal";
 import Form from "../../../Form/Form";
 import Input from "../../../Form/Fields/Input/Input";
 import Button from "../../Button/Button";
-import MeetingTimePicker from "../../../MeetingTimePicker/MeetingTimePicker";
 import TextArea from "../../../Form/Fields/TextArea/TextArea";
+import TimeSelect from "../../../Form/Fields/TimeSelect/TimeSelect";
 
 import { modalActions } from "../../../../store/modalStore";
 import { alertActions } from "../../../../store/alertStore";
+import { meetingActions } from "../../../../store/meetingStore";
 
 import "./AddMeetingModal.scss";
 
@@ -19,6 +20,12 @@ const AddMeetingModal = () => {
   const dispatch = useDispatch();
   const modalState = useSelector((state) => state.modals.showModal);
   const selectedRoomState = useSelector((state) => state.meetings.selectedRoom);
+  const selectedStartTime = useSelector(
+    (state) => state.meetings.selectedStartTime
+  );
+  const selectedMeetingDate = useSelector(
+    (state) => state.meetings.selectedMeetingDate
+  );
 
   const modalHideHandler = () => {
     dispatch(modalActions.hideModal());
@@ -87,6 +94,14 @@ const AddMeetingModal = () => {
       });
   };
 
+  const onChangeHandler = (e) => {
+    // get the selected date from the date picker and the start time, combine them into a new Date and set the state
+    let startDateTime = selectedMeetingDate + " " + e.target.value;
+
+    dispatch(meetingActions.setSelectedStartTime(startDateTime));
+    dispatch(meetingActions.setMeetingStartTime(startDateTime));
+  };
+
   return (
     <CustomModal
       heading="Add a Meeting"
@@ -106,7 +121,18 @@ const AddMeetingModal = () => {
           label="Description"
           placeholder="Please describe what this meeting is about"
         />
-        <MeetingTimePicker />
+        <TimeSelect
+          id="meetingStartTimeSelect"
+          label="Start Time"
+          startEnd="start"
+          onChange={onChangeHandler}
+        />
+        <TimeSelect
+          id="meetingEndTimeSelect"
+          label="End Time"
+          startEnd="end"
+          startTime={selectedStartTime}
+        />
         <TextArea
           id="meetingAttendeesField"
           label="Attendees"
