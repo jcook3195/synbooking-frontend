@@ -8,19 +8,23 @@ import "./RoomList.scss";
 
 const RoomList = () => {
   // redux
-  const roomsState = useSelector((state) => state.meetings.rooms);
+  const roomsState = useSelector((state) => state.meetings.newRooms);
 
   return (
     <>
       <Accordion>
         {Object.entries(roomsState).map((entry) => {
+          let availability = entry[1]["availability"]
+            ? "available"
+            : "unavailable";
+
           return (
             <RoomsListItem
               roomName={entry[0].toString().toLowerCase()}
-              roomStatus="Open all day"
-              roomAvailability="available"
-              roomId={entry[1]}
-              key={entry[1]}
+              roomStatus={entry[1]["statusMsg"]}
+              roomAvailability={availability}
+              roomId={entry[1]["id"]}
+              key={entry[1]["id"]}
             />
           );
         })}
