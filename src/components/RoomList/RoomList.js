@@ -8,7 +8,7 @@ import "./RoomList.scss";
 
 const RoomList = () => {
   // redux
-  const roomsState = useSelector((state) => state.meetings.newRooms);
+  const roomsState = useSelector((state) => state.meetings.rooms);
 
   return (
     <>

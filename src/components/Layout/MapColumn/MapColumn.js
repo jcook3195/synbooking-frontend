@@ -4,11 +4,11 @@ import { useSelector } from "react-redux";
 import Building from "../../Building/Building";
 
 const MapColumn = () => {
-  const selectedRoom = useSelector((state) => state.meetings.selectedRoom);
+  const meetings = useSelector((state) => state.meetings.meetings);
 
   return (
     <div id="map-col" className="col-12 col-lg-9 text-center">
-      <h1>{selectedRoom}</h1>
+      <p>{JSON.stringify(meetings)}</p>
       <Building />
     </div>
   );
