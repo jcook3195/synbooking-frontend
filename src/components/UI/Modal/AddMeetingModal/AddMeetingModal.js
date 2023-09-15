@@ -51,8 +51,10 @@ const AddMeetingModal = () => {
     let roomId = selectedRoomState;
     let meetingName = formFields[0].value;
     let meetingDescription = formFields[1].value;
-    let startDateTime = formFields[2].value;
-    let endDateTime = formFields[3].value;
+    let startDateTime = new Date(
+      selectedMeetingDate + " " + formFields[2].value
+    );
+    let endDateTime = new Date(selectedMeetingDate + " " + formFields[3].value);
     let attendees = formFields[4].value;
 
     let data = JSON.stringify({

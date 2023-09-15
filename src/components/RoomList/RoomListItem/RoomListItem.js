@@ -29,7 +29,7 @@ const RoomsListItem = (props) => {
         <Accordion.Header>
           <div className="accordion-title-content">
             <h4>
-              Room {props.roomName.toUpperCase()}{" "}
+              Room {props.roomName.toUpperCase()}
               <AvailabilityCircle availability={props.roomAvailability} />
             </h4>
             <p>{props.roomStatus}</p>

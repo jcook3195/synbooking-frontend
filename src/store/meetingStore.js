@@ -35,6 +35,68 @@ const initialState = {
   selectedMeetingDate: todayString,
   selectedStartTime: todayString + " " + nowTimeString,
   meetingStartTime: null,
+  newRooms: {
+    A: {
+      id: "65008c61e49aed0cfc36f0a1",
+      availability: true,
+      size: "small",
+      statusMsg: "Open All Day",
+    },
+    B: {
+      id: "65008c68e49aed0cfc36f0a2",
+      availability: true,
+      size: "small",
+      statusMsg: "Open All Day",
+    },
+    C: {
+      id: "65008c75e49aed0cfc36f0a3",
+      availability: false,
+      size: "small",
+      statusMsg: "Open All Day",
+    },
+    D: {
+      id: "65008c7ae49aed0cfc36f0a4",
+      availability: true,
+      size: "small",
+      statusMsg: "Open All Day",
+    },
+    E: {
+      id: "65008c80e49aed0cfc36f0a5",
+      availability: true,
+      size: "small",
+      statusMsg: "Open All Day",
+    },
+    F: {
+      id: "65008c86e49aed0cfc36f0a6",
+      availability: true,
+      size: "small",
+      statusMsg: "Open All Day",
+    },
+    G: {
+      id: "65008c8ae49aed0cfc36f0a7",
+      availability: false,
+      size: "small",
+      statusMsg: "Open All Day",
+    },
+    H: {
+      id: "65008c93e49aed0cfc36f0a8",
+      availability: false,
+      size: "small",
+      statusMsg: "Open All Day",
+    },
+    I: {
+      id: "65008c98e49aed0cfc36f0a9",
+      availability: true,
+      size: "large",
+      statusMsg: "Open All Day",
+    },
+    J: {
+      id: "65008c9de49aed0cfc36f0aa",
+      availability: false,
+      size: "large",
+      statusMsg: "Open All Day",
+    },
+  },
 };
 
 const meetingSlice = createSlice({
