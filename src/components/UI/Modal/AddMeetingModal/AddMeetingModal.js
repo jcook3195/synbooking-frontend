@@ -52,8 +52,8 @@ const AddMeetingModal = () => {
     let meetingName = formFields[0].value;
     let meetingDescription = formFields[1].value;
     let startDateTime = formFields[2].value;
-    let endDateTime = formFields[11].value;
-    let attendees = formFields[20].value;
+    let endDateTime = formFields[3].value;
+    let attendees = formFields[4].value;
 
     let data = JSON.stringify({
       user: loggedInUser,
@@ -89,6 +89,7 @@ const AddMeetingModal = () => {
       .catch((err) => {
         console.error(err);
         alertShowHandler("danger", "There was an error adding a meeting.");
+        alertHideTimeout(5000);
       });
   };
 
