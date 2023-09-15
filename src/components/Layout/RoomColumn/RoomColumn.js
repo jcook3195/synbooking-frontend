@@ -1,8 +1,9 @@
 import React from "react";
+
 import RoomList from "../../RoomList/RoomList";
+import DateInput from "../../Form/Fields/DateInput/DateInput";
 
 import "./RoomColumn.scss";
-import MeetingTimePicker from "../../MeetingTimePicker/MeetingTimePicker";
 
 const RoomColumn = () => {
   return (
@@ -11,8 +12,12 @@ const RoomColumn = () => {
         <div className="col-12 text-center">
           <h2>Available Rooms</h2>
         </div>
-        <MeetingTimePicker />
+        <DateInput
+          id="meetingDateInput"
+          label="Check Availability for Another Day:"
+        />
         <div className="col-12 text-left">
+          <h2>Current Availability</h2>
           <RoomList />
         </div>
       </div>

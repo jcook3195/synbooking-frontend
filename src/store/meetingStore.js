@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+let todayString = new Date().toISOString().split("T")[0];
+let nowTimeHours = new Date().getHours().toString();
+let nowTimeMinutes = new Date().getMinutes().toString();
+let nowTimeString = nowTimeHours + ":" + nowTimeMinutes;
+
 const initialState = {
   roomAvailability: {
     A: false,
@@ -27,6 +32,9 @@ const initialState = {
     J: "65008c9de49aed0cfc36f0aa",
   },
   selectedRoom: null,
+  selectedMeetingDate: todayString,
+  selectedStartTime: todayString + " " + nowTimeString,
+  meetingStartTime: null,
 };
 
 const meetingSlice = createSlice({
@@ -46,6 +54,15 @@ const meetingSlice = createSlice({
     },
     setSelectedRoom(state, data) {
       state.selectedRoom = data.payload;
+    },
+    setSelectedMeetingDate(state, data) {
+      state.selectedMeetingDate = data.payload;
+    },
+    setSelectedStartTime(state, data) {
+      state.selectedStartTime = data.payload;
+    },
+    setMeetingStartTime(state, data) {
+      state.meetingStartTime = data.payload;
     },
   },
 });
