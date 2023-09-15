@@ -40,10 +40,14 @@ const TimeSelect = (props) => {
   // build an array of all possible meeting start/end times
   let timesArray = [];
   for (let i = 6; i < 18; i++) {
-    if (selectedDate != today) {
+    // loop through 6 - 18 for open hours
+    if (selectedDate !== today.toString()) {
+      // if it is the current date that the user has selected
       for (let j = 0; j < 60; j++) {
+        // loop through 0 - 59 for all possible minute values
         if (j % 15 === 0) {
-          let stringJLen = j.toString().length;
+          // only show the 15 min increments
+          let stringJLen = j.toString().length; // convert to string and get length so if value is 0 it adds another 0 ex: (060 ~ 0600)
           let minuteVal = j;
 
           if (stringJLen < 2) {
@@ -51,20 +55,27 @@ const TimeSelect = (props) => {
           }
 
           if (props.startEnd === "end" && meetingStartTime != null) {
+            // if it is a meeting end time picker
             if (i > newSelectedHours) {
-              timesArray.push(i + ":" + minuteVal);
+              // if the hour value of the selected start time is less than the loop hour index
+              timesArray.push(i + ":" + minuteVal); // add the time to the array
             } else if (i === newSelectedHours && j >= newSelectedMinutes) {
-              timesArray.push(i + ":" + minuteVal);
+              // if the hour of the selected start time is te same and the selected minutes is less than the minute loop index
+              timesArray.push(i + ":" + minuteVal); // add the time to the array
             }
           } else {
+            // if it is a meeting start time picker
             timesArray.push(i + ":" + minuteVal);
           }
         }
       }
     } else if (i >= timeH) {
+      // if it is a future date the user has selected
       for (let j = 0; j < 60; j++) {
+        // loop through 0 - 59 for all possible minute values
         if (j % 15 === 0) {
-          let stringJLen = j.toString().length;
+          // only show the 15 min increments
+          let stringJLen = j.toString().length; // convert to string and get length so if value is 0 it adds another 0 ex: (060 ~ 0600)
           let minuteVal = j;
 
           if (stringJLen < 2) {
@@ -72,9 +83,10 @@ const TimeSelect = (props) => {
           }
 
           if (i > timeH) {
-            timesArray.push(i + ":" + minuteVal);
+            // if the current hour is less than the hour loop index
+            timesArray.push(i + ":" + minuteVal); // add the time to the array
           } else if (i === timeH && j >= timeM) {
-            timesArray.push(i + ":" + minuteVal);
+            timesArray.push(i + ":" + minuteVal); // if the current hour is equal to the loop index and the current minutes are less than the minute loop index
           }
         }
       }
@@ -85,8 +97,6 @@ const TimeSelect = (props) => {
     timesArray.shift(); // remove the first time as a possible end time
     timesArray.push("18:00"); // always need this end time
   }
-
-  console.log("rendering");
 
   return (
     <div className="mb-3">
