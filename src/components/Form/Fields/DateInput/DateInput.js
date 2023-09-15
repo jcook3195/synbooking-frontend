@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { meetingActions } from "../../../../store/meetingStore";
 
@@ -7,18 +7,12 @@ const DateInput = (props) => {
   // redux
   const dispatch = useDispatch();
 
-  // figure out today and the following friday to restrict meeting booking
-  // TODO - Maybe have it restricted to just booking 1 or two weeks ahead of time? That way you can book a monday morning meeting on a friday
+  // only let meetings be booked one week ahead of time
   let today = new Date();
-  let first = today.getDate() - today.getDay();
-  let last = first + 5;
+  let maxDay = today.getDate() + 7;
 
   let todayString = today.toISOString().split("T")[0];
-  let friday = new Date(today.setDate(last)).toISOString().split("T")[0];
-
-  const selectedMeetingDate = useSelector(
-    (state) => state.meetings.selectedMeetingDate
-  );
+  let endOfWeek = new Date(today.setDate(maxDay)).toISOString().split("T")[0];
 
   // set initial field value
   const [fieldVal, setFieldVal] = useState(todayString);
@@ -40,7 +34,7 @@ const DateInput = (props) => {
         className="form-control"
         aria-label={props.label}
         min={todayString}
-        max={friday}
+        max={endOfWeek}
         value={fieldVal}
         onChange={onChangeHandler}
       />
