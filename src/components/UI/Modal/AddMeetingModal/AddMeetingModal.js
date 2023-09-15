@@ -47,8 +47,6 @@ const AddMeetingModal = () => {
     e.preventDefault();
     const formFields = e.target;
 
-    console.log(e);
-
     let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
     let roomId = selectedRoomState;
     let meetingName = formFields[0].value;
