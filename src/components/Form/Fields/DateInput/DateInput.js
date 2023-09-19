@@ -44,6 +44,11 @@ const DateInput = (props) => {
       .catch((err) => {
         console.error(err);
       });
+
+    // reset the previous meetings state to clear the meetings
+    dispatch(meetingActions.resetRoomAvailability());
+    // update the meetings state
+    dispatch(meetingActions.updateRoomAvailability());
   };
 
   return (

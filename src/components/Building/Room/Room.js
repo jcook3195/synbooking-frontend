@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 
 import { meetingActions } from "../../../store/meetingStore";
+import { modalActions } from "../../../store/modalStore";
 
 const Room = (props) => {
   // redux
@@ -10,6 +11,7 @@ const Room = (props) => {
   const onClickHandler = (e) => {
     e.preventDefault();
 
+    dispatch(modalActions.showModal());
     dispatch(meetingActions.setSelectedRoom(props.name));
   };
 

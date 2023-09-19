@@ -39,7 +39,7 @@ const RoomsListItem = (props) => {
           <Button
             type="button"
             id="showModalButton"
-            classNames="btn-primary"
+            classNames="btn-secondary"
             onClick={() => modalShowButtonClickHandler(props.roomId)}
           >
             Create Meeting

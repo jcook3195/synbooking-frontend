@@ -56,11 +56,6 @@
 
         &.unavailable {
           background-color: #d90429 !important;
-          border: none !important;
-
-          &:hover {
-            cursor: not-allowed !important;
-          }
         }
 
         &#room-a {
