@@ -198,7 +198,7 @@ const meetingSlice = createSlice({
 
                 if (innerMeetingVal.room === roomVal[1].id) {
                   // if any meetings start after
-                  console.log("inner: ", roomVal[1].id);
+                  // console.log("inner: ", roomVal[1].id);
                 } else {
                   console.log("hey hi hello");
                   // last meeting of the day

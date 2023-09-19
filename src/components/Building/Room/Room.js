@@ -12,7 +12,7 @@ const Room = (props) => {
     e.preventDefault();
 
     dispatch(modalActions.showModal());
-    dispatch(meetingActions.setSelectedRoom(props.name));
+    dispatch(meetingActions.setSelectedRoom(props.roomId));
   };
 
   return (
