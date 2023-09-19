@@ -46,6 +46,7 @@ const MeetingScheduler = () => {
       .then((res) => {
         // console.log(JSON.stringify(res.data));
         dispatch(meetingActions.setMeetings(res.data));
+        dispatch(meetingActions.updateRoomAvailability());
       })
       .catch((err) => {
         console.error(err);
