@@ -234,23 +234,11 @@ const meetingSlice = createSlice({
 
                 if (innerMeetingVal.room === roomVal[1].id) {
                   // if any meetings start after
-                  // console.log("inner: ", roomVal[1].id);
-                  // console.log(innerEndDateTime);
                   if (innerEndDateTime > startDateTime) {
-                    console.log(innerEndDateTime);
-                    console.log(startDateTime);
-                    console.log("hi");
                     newRooms[roomVal[0].toString()].statusMsg =
                       "Free for the rest of the day.";
                   }
-                } // else {
-                //   console.log("hey hi hello");
-                //   console.log(innerMeetingVal.room, roomVal[1].id);
-                //   // last meeting of the day
-                //   // current time is after any endDateTimes
-                //   newRooms[roomVal[0].toString()].statusMsg =
-                //     "Free for the rest of the day.";
-                // }
+                }
               });
             }
 
@@ -298,7 +286,6 @@ const meetingSlice = createSlice({
 
         // loop through all the rooms for every meeting for comparisons and updates
         Object.entries(rooms).forEach((roomVal, key) => {
-          // console.log("key", key);
           if (meetingVal.room === roomVal[1].id) {
             // past meetings condition
             if (currentDateTime > endDateTime) {
@@ -311,8 +298,6 @@ const meetingSlice = createSlice({
                 // if the meeting is not already found in the array, push it
                 newPastMeetings[roomVal[0]].push(meetingVal);
               }
-
-              // console.log("Past", meetingVal);
             }
 
             // current meetings condition
@@ -320,7 +305,6 @@ const meetingSlice = createSlice({
               currentDateTime >= startDateTime &&
               currentDateTime <= endDateTime
             ) {
-              // console.log("Current", meetingVal);
               // code is looping multiple times, so add this to make sure it is not added to the state twice
               const found = newActiveMeetings[roomVal[0]].some(
                 (el) => el.id === meetingVal.id
@@ -334,7 +318,6 @@ const meetingSlice = createSlice({
 
             // upcoming meetings condition
             if (currentDateTime < startDateTime) {
-              // console.log("Upcoming", meetingVal);
               // code is looping multiple times, so add this to make sure it is not added to the state twice
               const found = newUpcomingMeetings[roomVal[0]].some(
                 (el) => el.id === meetingVal.id
@@ -385,8 +368,6 @@ const meetingSlice = createSlice({
                 newRooms[futureMeetVal[0].toString()].statusMsg =
                   "Free Until " + startHrs + ":" + startMins;
                 newRooms[futureMeetVal[0].toString()].availability = true;
-              } else {
-                console.log("no bueno");
               }
             });
           });
