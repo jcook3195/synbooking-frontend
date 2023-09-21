@@ -352,29 +352,62 @@ const meetingSlice = createSlice({
           Object.entries(compActiveMeetings).forEach((activeMeetVal, nKey) => {
             let activeMeetingSet = current(activeMeetVal[1]);
             // loop through each array of meeting objects
-            Object.values(activeMeetingSet).forEach((ams) => {
-              if (!(fms.room === ams.room)) {
-                // if there is not an active meeting in the same room that there is a future meeting
-                let prettyStartTime = new Date(fms.startDateTime);
-                // adding an extra 0 for minute formatting if only one number
-                let startHrs = prettyStartTime.getHours();
-                let startMins = prettyStartTime.getMinutes();
-                if (startHrs.toString().length < 2) {
-                  startHrs = "0" + startHrs;
-                }
-                if (startMins.toString().length < 2) {
-                  startMins = startMins + "0";
-                }
-                newRooms[futureMeetVal[0].toString()].statusMsg =
-                  "Free Until " + startHrs + ":" + startMins;
-                newRooms[futureMeetVal[0].toString()].availability = true;
+            console.log(
+              !Array.isArray(current(activeMeetVal[1])) ||
+                !current(activeMeetVal[1]).length
+                ? "not an array"
+                : "got some vals in " +
+                    JSON.stringify(current(activeMeetVal[1]))
+            );
+
+            // now determine if there are any active meetings in the same room for the day
+            // if there are, a special loop needs to be run to make sure the future meetings do not wrongly display the status
+            // if there are no currently active meetings, just go ahead and display the future meeting
+
+            if (
+              !Array.isArray(current(activeMeetVal[1])) ||
+              !current(activeMeetVal[1]).length
+            ) {
+              // if the array is empty. That means there are no active meetings in the array and the future meetings can be displayed
+              let prettyStartTime = new Date(fms.startDateTime);
+              // adding an extra 0 for minute formatting if only one number
+              let startHrs = prettyStartTime.getHours();
+              let startMins = prettyStartTime.getMinutes();
+              if (startHrs.toString().length < 2) {
+                startHrs = "0" + startHrs;
               }
-            });
+              if (startMins.toString().length < 2) {
+                startMins = startMins + "0";
+              }
+              newRooms[futureMeetVal[0].toString()].statusMsg =
+                "Free Until " + startHrs + ":" + startMins;
+              newRooms[futureMeetVal[0].toString()].availability = true;
+            } else {
+              // there are some active meetings. run the loop to make sure those are not displayed
+              Object.values(activeMeetingSet).forEach((ams) => {
+                if (!(fms.room === ams.room)) {
+                  // if there is not an active meeting in the same room that there is a future meeting
+                  let prettyStartTime = new Date(fms.startDateTime);
+                  // adding an extra 0 for minute formatting if only one number
+                  let startHrs = prettyStartTime.getHours();
+                  let startMins = prettyStartTime.getMinutes();
+                  if (startHrs.toString().length < 2) {
+                    startHrs = "0" + startHrs;
+                  }
+                  if (startMins.toString().length < 2) {
+                    startMins = startMins + "0";
+                  }
+                  newRooms[futureMeetVal[0].toString()].statusMsg =
+                    "Free Until " + startHrs + ":" + startMins;
+                  newRooms[futureMeetVal[0].toString()].availability = true;
+                }
+              });
+            }
           });
         });
       });
 
-      // now just the current meetings. important to do these last since they have highest priority
+      // now just the active meetings. important to do these last since they have highest priority
       Object.entries(compActiveMeetings).forEach((activeMeetVal, nKey) => {
         let activeMeetingSet = current(activeMeetVal[1]);
         // loop through each array of meeting objects
