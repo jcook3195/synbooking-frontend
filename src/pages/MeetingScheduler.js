@@ -44,10 +44,12 @@ const MeetingScheduler = () => {
     axios
       .request(config)
       .then((res) => {
-        // console.log(JSON.stringify(res.data));
+        // reset the previous meetings state to clear the meetings
+        dispatch(meetingActions.resetRoomAvailability());
+        // set the meetings
         dispatch(meetingActions.setMeetings(res.data));
-        // dispatch(meetingActions.updateRoomAvailability());
-        dispatch(meetingActions.updateRoomAvailability2());
+        // update the availability
+        dispatch(meetingActions.updateRoomAvailability());
       })
       .catch((err) => {
         console.error(err);
