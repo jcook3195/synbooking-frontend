@@ -23,6 +23,9 @@ const DateInput = (props) => {
 
   const onChangeHandler = (e) => {
     setFieldVal(e.target.value);
+    // reset the previous meetings state to clear the meetings
+    dispatch(meetingActions.resetRoomAvailability());
+    // set the selected meeting date from the input
     dispatch(meetingActions.setSelectedMeetingDate(e.target.value));
 
     // grab all the meetings for the set date
@@ -40,15 +43,12 @@ const DateInput = (props) => {
       .then((res) => {
         // console.log(JSON.stringify(res.data));
         dispatch(meetingActions.setMeetings(res.data));
+        // update the meetings state
+        dispatch(meetingActions.updateRoomAvailability());
       })
       .catch((err) => {
         console.error(err);
       });
-
-    // reset the previous meetings state to clear the meetings
-    dispatch(meetingActions.resetRoomAvailability());
-    // update the meetings state
-    dispatch(meetingActions.updateRoomAvailability());
   };
 
   return (

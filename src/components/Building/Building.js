@@ -7,13 +7,13 @@ import "./Building.scss";
 
 const Building = () => {
   // redux
-  const roomsState = useSelector((state) => state.meetings.rooms);
+  const rooms = useSelector((state) => state.meetings.rooms);
 
   return (
     <div id="ex-map-container">
       <div id="bldg-main" className="building-part">
         <div className="bldg-rooms">
-          {Object.entries(roomsState).map((entry) => {
+          {Object.entries(rooms).map((entry) => {
             let availability = entry[1]["availability"]
               ? "available"
               : "unavailable";

@@ -151,111 +151,112 @@ const meetingSlice = createSlice({
     setMeetingStartTime(state, data) {
       state.meetingStartTime = data.payload;
     },
+    // updateRoomAvailability(state) {
+    //   // get the current state of both the meetings and the rooms
+    //   let meetings = current(state.meetings);
+    //   let rooms = current(state.rooms);
+
+    //   // new instance of rooms state for updating the original at the end
+    //   let newRooms = state.rooms;
+
+    //   // loop through meetings and compare room ids to rooms and set availability
+    //   Object.values(meetings).forEach((meetingVal) => {
+    //     let startTime = meetingVal.startDateTime.split("T")[1];
+    //     let endTime = meetingVal.endDateTime.split("T")[1];
+
+    //     let startTimeMinusTrail = startTime.split(".")[0];
+    //     let endTimeMinusTrail = endTime.split(".")[0];
+
+    //     let currentDateTime = new Date();
+    //     let startDateTime = new Date();
+    //     startDateTime.setHours(startTimeMinusTrail.split(":")[0] - 4); // cheating to convert from gmt to est
+    //     startDateTime.setMinutes(startTimeMinusTrail.split(":")[1]);
+    //     startDateTime.setSeconds(startTimeMinusTrail.split(":")[2]);
+
+    //     let endDateTime = new Date();
+    //     endDateTime.setHours(endTimeMinusTrail.split(":")[0] - 4); // cheating to convert from gmt to est
+    //     endDateTime.setMinutes(endTimeMinusTrail.split(":")[1]);
+    //     endDateTime.setSeconds(endTimeMinusTrail.split(":")[2]);
+    //     // loop through the rooms and update based off meetings
+    //     Object.entries(rooms).forEach((roomVal, key) => {
+    //       let prettyStartTime = new Date(meetingVal.startDateTime);
+    //       let prettyEndTime = new Date(meetingVal.endDateTime);
+
+    //       // adding an extra 0 for minute formatting if only one number
+    //       let startHrs = prettyStartTime.getHours();
+    //       let startMins = prettyStartTime.getMinutes();
+    //       let endHrs = prettyEndTime.getHours();
+    //       let endMins = prettyEndTime.getMinutes();
+
+    //       if (startHrs.toString().length < 2) {
+    //         startHrs = "0" + startHrs;
+    //       }
+
+    //       if (startMins.toString().length < 2) {
+    //         startMins = startMins + "0";
+    //       }
+
+    //       if (endHrs.toString().length < 2) {
+    //         endHrs = "0" + endHrs;
+    //       }
+
+    //       if (endMins.toString().length < 2) {
+    //         endMins = endMins + "0";
+    //       }
+
+    //       if (meetingVal.room === roomVal[1].id) {
+    //         // checks for availability and status message updates
+    //         if (
+    //           startDateTime <= currentDateTime &&
+    //           endDateTime >= currentDateTime
+    //         ) {
+    //           // if there is a currently active meeting
+    //           newRooms[roomVal[0].toString()].statusMsg =
+    //             "Booked Until " + endHrs + ":" + endMins;
+    //           newRooms[roomVal[0].toString()].availability = false;
+    //         }
+
+    //         if (currentDateTime > endDateTime) {
+    //           // loop meetings to check if there are any meetings that start after this, and if so do not update the state
+    //           Object.values(meetings).forEach((innerMeetingVal) => {
+    //             let innerEndTime = innerMeetingVal.endDateTime.split("T")[1];
+    //             let innerEndTimeMinusTrail = innerEndTime.split(".")[0];
+    //             let innerEndDateTime = new Date();
+    //             innerEndDateTime.setHours(
+    //               innerEndTimeMinusTrail.split(":")[0] - 4
+    //             ); // cheating to convert from gmt to est
+    //             innerEndDateTime.setMinutes(
+    //               innerEndTimeMinusTrail.split(":")[1]
+    //             );
+    //             innerEndDateTime.setSeconds(
+    //               innerEndTimeMinusTrail.split(":")[2]
+    //             );
+
+    //             if (innerMeetingVal.room === roomVal[1].id) {
+    //               // if any meetings start after
+    //               if (innerEndDateTime > startDateTime) {
+    //                 newRooms[roomVal[0].toString()].statusMsg =
+    //                   "Free for the rest of the day.";
+    //               }
+    //             }
+    //           });
+    //         }
+
+    //         if (currentDateTime < startDateTime) {
+    //           // current time is before any meeting times
+    //           newRooms[roomVal[0].toString()].statusMsg =
+    //             "Free Until " + startHrs + ":" + startMins;
+    //         }
+    //       }
+    //     });
+    //   });
+
+    //   state.rooms = newRooms;
+    // },
     updateRoomAvailability(state) {
-      // get the current state of both the meetings and the rooms
-      let meetings = current(state.meetings);
-      let rooms = current(state.rooms);
-
-      // new instance of rooms state for updating the original at the end
-      let newRooms = state.rooms;
-
-      // loop through meetings and compare room ids to rooms and set availability
-      Object.values(meetings).forEach((meetingVal) => {
-        let startTime = meetingVal.startDateTime.split("T")[1];
-        let endTime = meetingVal.endDateTime.split("T")[1];
-
-        let startTimeMinusTrail = startTime.split(".")[0];
-        let endTimeMinusTrail = endTime.split(".")[0];
-
-        let currentDateTime = new Date();
-        let startDateTime = new Date();
-        startDateTime.setHours(startTimeMinusTrail.split(":")[0] - 4); // cheating to convert from gmt to est
-        startDateTime.setMinutes(startTimeMinusTrail.split(":")[1]);
-        startDateTime.setSeconds(startTimeMinusTrail.split(":")[2]);
-
-        let endDateTime = new Date();
-        endDateTime.setHours(endTimeMinusTrail.split(":")[0] - 4); // cheating to convert from gmt to est
-        endDateTime.setMinutes(endTimeMinusTrail.split(":")[1]);
-        endDateTime.setSeconds(endTimeMinusTrail.split(":")[2]);
-        // loop through the rooms and update based off meetings
-        Object.entries(rooms).forEach((roomVal, key) => {
-          let prettyStartTime = new Date(meetingVal.startDateTime);
-          let prettyEndTime = new Date(meetingVal.endDateTime);
-
-          // adding an extra 0 for minute formatting if only one number
-          let startHrs = prettyStartTime.getHours();
-          let startMins = prettyStartTime.getMinutes();
-          let endHrs = prettyEndTime.getHours();
-          let endMins = prettyEndTime.getMinutes();
-
-          if (startHrs.toString().length < 2) {
-            startHrs = "0" + startHrs;
-          }
-
-          if (startMins.toString().length < 2) {
-            startMins = startMins + "0";
-          }
-
-          if (endHrs.toString().length < 2) {
-            endHrs = "0" + endHrs;
-          }
-
-          if (endMins.toString().length < 2) {
-            endMins = endMins + "0";
-          }
-
-          if (meetingVal.room === roomVal[1].id) {
-            // checks for availability and status message updates
-            if (
-              startDateTime <= currentDateTime &&
-              endDateTime >= currentDateTime
-            ) {
-              // if there is a currently active meeting
-              newRooms[roomVal[0].toString()].statusMsg =
-                "Booked Until " + endHrs + ":" + endMins;
-              newRooms[roomVal[0].toString()].availability = false;
-            }
-
-            if (currentDateTime > endDateTime) {
-              // loop meetings to check if there are any meetings that start after this, and if so do not update the state
-              Object.values(meetings).forEach((innerMeetingVal) => {
-                let innerEndTime = innerMeetingVal.endDateTime.split("T")[1];
-                let innerEndTimeMinusTrail = innerEndTime.split(".")[0];
-                let innerEndDateTime = new Date();
-                innerEndDateTime.setHours(
-                  innerEndTimeMinusTrail.split(":")[0] - 4
-                ); // cheating to convert from gmt to est
-                innerEndDateTime.setMinutes(
-                  innerEndTimeMinusTrail.split(":")[1]
-                );
-                innerEndDateTime.setSeconds(
-                  innerEndTimeMinusTrail.split(":")[2]
-                );
-
-                if (innerMeetingVal.room === roomVal[1].id) {
-                  // if any meetings start after
-                  if (innerEndDateTime > startDateTime) {
-                    newRooms[roomVal[0].toString()].statusMsg =
-                      "Free for the rest of the day.";
-                  }
-                }
-              });
-            }
-
-            if (currentDateTime < startDateTime) {
-              // current time is before any meeting times
-              newRooms[roomVal[0].toString()].statusMsg =
-                "Free Until " + startHrs + ":" + startMins;
-            }
-          }
-        });
-      });
-
-      state.rooms = newRooms;
-    },
-    updateRoomAvailability2(state) {
       // get current state of meetings and rooms
       let meetings = current(state.meetings);
+
       let rooms = current(state.rooms);
 
       // new instance of rooms, past, active, and upcoming meetings for state updates and immutability
@@ -351,14 +352,6 @@ const meetingSlice = createSlice({
           // loop through current meetings to compare. if there is a current meeting in this room then don't update the state for the future meetings
           Object.entries(compActiveMeetings).forEach((activeMeetVal, nKey) => {
             let activeMeetingSet = current(activeMeetVal[1]);
-            // loop through each array of meeting objects
-            console.log(
-              !Array.isArray(current(activeMeetVal[1])) ||
-                !current(activeMeetVal[1]).length
-                ? "not an array"
-                : "got some vals in " +
-                    JSON.stringify(current(activeMeetVal[1]))
-            );
 
             // now determine if there are any active meetings in the same room for the day
             // if there are, a special loop needs to be run to make sure the future meetings do not wrongly display the status
@@ -436,15 +429,40 @@ const meetingSlice = createSlice({
       // update room status and availability
     },
     resetRoomAvailability(state) {
+      // loop friendly version
       let rooms = current(state.rooms);
-      // new instance of rooms state for updating the original at the end
+
+      // new instance of rooms for updating the original at the end
       let newRooms = state.rooms;
+      // create a var for wiping past, active, upcoming meetings
+      let meetingsWipe = {
+        A: [],
+        B: [],
+        C: [],
+        D: [],
+        E: [],
+        F: [],
+        G: [],
+        H: [],
+        I: [],
+        J: [],
+      };
 
       Object.entries(rooms).forEach((roomVal, key) => {
         newRooms[roomVal[0].toString()].statusMsg =
           "Free for the rest of the day.";
         newRooms[roomVal[0].toString()].availability = true;
       });
+
+      // wipe the past, active, and future meetings - and all meetings
+      state.pastMeetings = meetingsWipe;
+      state.activeMeetings = meetingsWipe;
+      state.upcomingMeetings = meetingsWipe;
+
+      state.meetings = {};
+
+      // update the rooms
+      state.rooms = newRooms;
     },
   },
 });

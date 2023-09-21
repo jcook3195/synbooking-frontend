@@ -4,6 +4,7 @@ import Accordion from "react-bootstrap/Accordion";
 
 import AvailabilityCircle from "../../UI/AvailabilityCircle/AvailabilityCircle";
 import Button from "../../UI/Button/Button";
+import BookedMeetings from "./BookedMeetings/BookedMeetings";
 
 import { modalActions } from "../../../store/modalStore";
 import { meetingActions } from "../../../store/meetingStore";
@@ -44,6 +45,7 @@ const RoomsListItem = (props) => {
           >
             Create Meeting
           </Button>
+          <BookedMeetings roomId={props.roomId} />
         </Accordion.Body>
       </Accordion.Item>
     </>
