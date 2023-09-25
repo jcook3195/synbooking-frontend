@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import Accordion from "react-bootstrap/Accordion";
+import { CalendarPlus } from "react-bootstrap-icons";
 
 import AvailabilityCircle from "../../UI/AvailabilityCircle/AvailabilityCircle";
 import Button from "../../UI/Button/Button";
@@ -40,10 +41,10 @@ const RoomsListItem = (props) => {
           <Button
             type="button"
             id="showModalButton"
-            classNames="btn-secondary"
+            classNames="btn-primary"
             onClick={() => modalShowButtonClickHandler(props.roomId)}
           >
-            Create Meeting
+            <CalendarPlus></CalendarPlus> New Meeting
           </Button>
           <BookedMeetings roomId={props.roomId} />
         </Accordion.Body>
