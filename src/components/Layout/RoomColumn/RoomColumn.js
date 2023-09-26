@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 
 import RoomList from "../../RoomList/RoomList";
 import DateInput from "../../Form/Fields/DateInput/DateInput";
+import MyMeetings from "../../MyMeetings/MyMeetings";
 
 import "./RoomColumn.scss";
 
@@ -44,6 +45,14 @@ const RoomColumn = () => {
         <div className="col-12 text-left">
           <h2>{roomListHeading}</h2>
           <RoomList />
+        </div>
+      </div>
+      <div id="myMeetings" className="row mb-5">
+        <div className="col-12 text-center">
+          <h2>My Upcoming Meetings</h2>
+        </div>
+        <div className="col-12 mb-3">
+          <MyMeetings />
         </div>
       </div>
     </div>
