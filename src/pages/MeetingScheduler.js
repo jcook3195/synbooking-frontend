@@ -7,6 +7,8 @@ import Container from "../components/Layout/Container";
 import RoomColumn from "../components/Layout/RoomColumn/RoomColumn";
 import MapColumn from "../components/Layout/MapColumn/MapColumn";
 import AddMeetingModal from "../components/UI/Modal/AddMeetingModal/AddMeetingModal";
+import EditMeetingModal from "../components/UI/Modal/EditMeetingModal/EditMeetingModal";
+import DeleteMeetingModal from "../components/UI/Modal/DeleteMeetingModal/DeleteMeetingModal";
 import CustomAlert from "../components/UI/Alert/CustomAlert";
 
 import { meetingActions } from "../store/meetingStore";
@@ -67,6 +69,8 @@ const MeetingScheduler = () => {
         <RoomColumn />
         <MapColumn />
         <AddMeetingModal />
+        <EditMeetingModal />
+        <DeleteMeetingModal />
       </Container>
     </div>
   );

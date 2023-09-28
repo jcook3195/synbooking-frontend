@@ -11,7 +11,7 @@ const Room = (props) => {
   const onClickHandler = (e) => {
     e.preventDefault();
 
-    dispatch(modalActions.showModal());
+    dispatch(modalActions.showAddModal());
     dispatch(meetingActions.setSelectedRoom(props.roomId));
   };
 

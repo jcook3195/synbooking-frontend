@@ -1,7 +1,14 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { useFormContext } from "react-hook-form";
 
 const TimeSelect = (props) => {
+  const {
+    register,
+    formState: { errors },
+    setValue,
+  } = useFormContext();
+
   // redux
   const selectedStartTime = useSelector(
     (state) => state.meetings.selectedStartTime
@@ -98,17 +105,25 @@ const TimeSelect = (props) => {
     timesArray.push("18:00"); // always need this end time
   }
 
+  // set the form field value
+  setValue(props.name, props.value);
+
+  // check if the name of the input is contained in the error object for displaying err class and message
+  const err = Object.keys(errors).includes(props.name) ? true : false;
+  const errClass = err ? " is-invalid" : "";
+
   return (
     <div className="mb-3">
       <label htmlFor={props.id} className="form-label">
         {props.label}
       </label>
       <select
-        name={props.id}
+        name={props.name}
         id={props.id}
-        className="form-select"
+        className={"form-select" + errClass}
         aria-label={props.label}
         onChange={props.onChange}
+        {...register(props.name, props.validations)}
       >
         {timesArray.map((time) => (
           <option value={time} key={time}>
@@ -116,6 +131,7 @@ const TimeSelect = (props) => {
           </option>
         ))}
       </select>
+      {err && <div className="invalid-feedback">{props.invalidText}</div>}
     </div>
   );
 };
