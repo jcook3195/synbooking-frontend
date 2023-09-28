@@ -47,11 +47,11 @@ const RoomColumn = () => {
           <RoomList />
         </div>
       </div>
-      <div id="myMeetings" className="row mb-5">
+      <div id="myMeetings" className="row mb-5 px-3">
         <div className="col-12 text-center">
-          <h2>My Upcoming Meetings</h2>
+          <h2>My Active / Upcoming Meetings</h2>
         </div>
-        <div className="col-12 mb-3">
+        <div className="col-12 mb-3 p-3 meetings-list">
           <MyMeetings />
         </div>
       </div>
