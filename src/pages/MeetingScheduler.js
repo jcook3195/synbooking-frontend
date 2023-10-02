@@ -12,6 +12,7 @@ import DeleteMeetingModal from "../components/UI/Modal/DeleteMeetingModal/Delete
 import CustomAlert from "../components/UI/Alert/CustomAlert";
 
 import { meetingActions } from "../store/meetingStore";
+import { alertActions } from "../store/alertStore";
 
 const MeetingScheduler = () => {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ const MeetingScheduler = () => {
   useEffect(() => {
     // check if someone is logged in, if not then redirect
     const loggedInUser = localStorage.getItem("user");
+    dispatch(alertActions.showLoader(true));
 
     // if someone is logged out on page load then go to landing for login
     if (!loggedInUser) {
@@ -52,9 +54,11 @@ const MeetingScheduler = () => {
         dispatch(meetingActions.setMeetings(res.data));
         // update the availability
         dispatch(meetingActions.updateRoomAvailability());
+        dispatch(alertActions.showLoader(false));
       })
       .catch((err) => {
         console.error(err);
+        dispatch(alertActions.showLoader(false));
       });
   });
 

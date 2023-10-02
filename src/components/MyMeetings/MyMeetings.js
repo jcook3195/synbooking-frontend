@@ -8,7 +8,14 @@ const MyMeetings = () => {
   const meetings = useSelector((state) => state.meetings.meetings);
   const rooms = useSelector((state) => state.meetings.rooms);
 
-  const loggedInUserId = JSON.parse(localStorage.getItem("user"))["userId"];
+  const loggedInUser = localStorage.getItem("user");
+  let loggedInUserId;
+
+  if (loggedInUser !== null) {
+    loggedInUserId = JSON.parse(localStorage.getItem("user"))["userId"];
+  } else {
+    loggedInUserId = null;
+  }
 
   let meetingList = Object.entries(meetings).map((entry) => {
     if (entry[1].user === loggedInUserId) {

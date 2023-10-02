@@ -22,17 +22,41 @@ const TimeSelect = (props) => {
     (state) => state.meetings.meetingStartTime
   );
 
+  const meetingToEdit = useSelector((state) => state.meetings.meetingToEdit);
+  const editingActive = useSelector((state) => state.meetings.editingActive);
+  const activeMeetings = useSelector((state) => state.meetings.activeMeetings);
+
   let now;
 
   if (props.startEnd === "end") {
     now = new Date(selectedStartTime);
   } else {
     now = new Date();
+
+    // check if this is an issue with the active meetings
+    // all this just to make the start time show properly in the 'My meetings' section
+    // there was an issue with being able to edit a start time of an active meeting since it will only show start times in the future
+    // being able to edit the start time after the meeting has started would be necessary some times
+    if (meetingToEdit !== null) {
+      Object.values(activeMeetings).forEach((val) => {
+        Object.values(val).forEach((val2) => {
+          if (val2.id === meetingToEdit.id) {
+            // if a meeting is being edited, and that meetings id matches an entry in our active meetings, then set the start date first potential value to the edited meetings start time
+            now = new Date(meetingToEdit.startDateTime);
+          }
+        });
+      });
+    }
   }
 
   let timeH = now.getHours();
   let timeM = now.getMinutes();
-  let today = new Date().getDate();
+  let today = new Date().getDate().toString();
+
+  // add a 0 to the today string if it is only one character
+  if (today.length < 2) {
+    today = "0" + today;
+  }
 
   // javascript sucks so you have to do this to get an accurate day
   // this selectedMeetingDate is formatted yyyy-mm-dd and when
@@ -48,7 +72,7 @@ const TimeSelect = (props) => {
   let timesArray = [];
   for (let i = 6; i < 18; i++) {
     // loop through 6 - 18 for open hours
-    if (selectedDate !== today.toString()) {
+    if (selectedDate !== today) {
       // if it is the current date that the user has selected
       for (let j = 0; j < 60; j++) {
         // loop through 0 - 59 for all possible minute values
@@ -105,8 +129,46 @@ const TimeSelect = (props) => {
     timesArray.push("18:00"); // always need this end time
   }
 
-  // set the form field value
-  setValue(props.name, props.value);
+  if (props.invocation === "add") {
+    console.log("adding");
+    setValue(props.name, timesArray[0]);
+  }
+
+  if (meetingToEdit !== null) {
+    let start = new Date(meetingToEdit.startDateTime);
+    let end = new Date(meetingToEdit.endDateTime);
+
+    let startHrs = start.getHours().toString();
+    let startMins = start.getMinutes().toString();
+    let endHrs = end.getHours().toString();
+    let endMins = end.getMinutes().toString();
+
+    if (startHrs.length < 2) {
+      startHrs = "0" + startHrs;
+    }
+
+    if (startMins.length < 2) {
+      startMins = "0" + startMins;
+    }
+
+    if (endHrs.length < 2) {
+      endHrs = "0" + endHrs;
+    }
+
+    if (endMins.length < 2) {
+      endMins = "0" + endMins;
+    }
+
+    if (props.invocation === "edit") {
+      if (editingActive) {
+        if (props.startEnd === "start") {
+          setValue(props.name, startHrs + ":" + startMins);
+        } else {
+          setValue(props.name, endHrs + ":" + endMins);
+        }
+      }
+    }
+  }
 
   // check if the name of the input is contained in the error object for displaying err class and message
   const err = Object.keys(errors).includes(props.name) ? true : false;
@@ -122,8 +184,9 @@ const TimeSelect = (props) => {
         id={props.id}
         className={"form-select" + errClass}
         aria-label={props.label}
-        onChange={props.onChange}
-        {...register(props.name, props.validations)}
+        {...register(props.name, {
+          onChange: props.onChange,
+        })}
       >
         {timesArray.map((time) => (
           <option value={time} key={time}>
