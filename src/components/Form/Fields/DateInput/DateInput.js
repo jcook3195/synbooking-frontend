@@ -3,6 +3,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 
 import { meetingActions } from "../../../../store/meetingStore";
+import { alertActions } from "../../../../store/alertStore";
 
 const DateInput = (props) => {
   // redux
@@ -23,6 +24,7 @@ const DateInput = (props) => {
 
   const onChangeHandler = (e) => {
     setFieldVal(e.target.value);
+    dispatch(alertActions.showLoader(true));
     // reset the previous meetings state to clear the meetings
     dispatch(meetingActions.resetRoomAvailability());
     // set the selected meeting date from the input
@@ -45,9 +47,11 @@ const DateInput = (props) => {
         dispatch(meetingActions.setMeetings(res.data));
         // update the meetings state
         dispatch(meetingActions.updateRoomAvailability());
+        dispatch(alertActions.showLoader(false));
       })
       .catch((err) => {
         console.error(err);
+        dispatch(alertActions.showLoader(false));
       });
   };
 

@@ -13,10 +13,10 @@ const MapColumn = () => {
 
   return (
     <div id="map-col" className="col-12 col-lg-9 text-center">
-      <p>All - {JSON.stringify(meetings)}</p>
+      {/* <p>All - {JSON.stringify(meetings)}</p>
       <p>Past - {JSON.stringify(pastMeetings)}</p>
       <p>Active - {JSON.stringify(activeMeetings)}</p>
-      <p>Future - {JSON.stringify(upcomingMeetings)}</p>
+      <p>Future - {JSON.stringify(upcomingMeetings)}</p> */}
       <Building />
     </div>
   );

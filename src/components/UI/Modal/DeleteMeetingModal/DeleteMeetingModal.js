@@ -36,6 +36,7 @@ const DeleteMeetingModal = () => {
 
   const handleDeleteBtnClick = () => {
     // let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
+    dispatch(alertActions.showLoader(true));
 
     // submit the new meeting
     let config = {
@@ -53,11 +54,13 @@ const DeleteMeetingModal = () => {
         // show and hide alert after 5 seconds
         alertShowHandler("success", "Meeting was deleted successfully.");
         alertHideTimeout(5000);
+        dispatch(alertActions.showLoader(false));
       })
       .catch((err) => {
         console.error(err);
         alertShowHandler("danger", "There was an error deleting the meeting.");
         alertHideTimeout(5000);
+        dispatch(alertActions.showLoader(false));
       });
   };
 

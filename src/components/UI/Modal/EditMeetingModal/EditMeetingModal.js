@@ -38,7 +38,8 @@ const EditMeetingModal = forwardRef((props, ref) => {
   );
 
   useEffect(() => {
-    // let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];f
+    // let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
+    dispatch(alertActions.showLoader(true));
 
     if (selectedMeeting !== null) {
       // get the meeting
@@ -87,6 +88,8 @@ const EditMeetingModal = forwardRef((props, ref) => {
           startElem.value = startTimeVal;
           endElem.value = endTimeVal;
 
+          dispatch(alertActions.showLoader(false));
+
           // console.log("title", titleVal);
           // console.log("desc", descVal);
           // console.log("atten", attendeesVal);
@@ -100,6 +103,7 @@ const EditMeetingModal = forwardRef((props, ref) => {
             "There was an error retreiving this meeting. Please refresh the browser."
           );
           alertHideTimeout(5000);
+          dispatch(alertActions.showLoader(false));
         });
     }
   }, [modalState]);
