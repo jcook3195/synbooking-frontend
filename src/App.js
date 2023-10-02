@@ -8,6 +8,26 @@ import MeetingScheduler from "./pages/MeetingScheduler";
 import Landing from "./pages/Landing";
 
 function App() {
+  //Eric Testing Connectivity
+  const reqBody = {
+    "username" : "Eric123",
+    "password" : "1223"
+  }
+
+  /*package.json -> proxy*/
+  fetch("api/auth/login", {
+    headers: {
+      "Content-Type" : "application/json"
+    },
+    method: "post",
+    body: JSON.stringify(reqBody)
+  }).then((response) => Promise.all([response.json(), response.headers]))
+  .then(([body, headers]) => {
+    const authValue = headers.get("authorization");
+    console.log(authValue);
+    console.log(body);
+  });
+  //=======================
   return (
     <React.Fragment>
       <Router>
