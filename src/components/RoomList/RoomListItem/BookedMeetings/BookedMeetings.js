@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import BookedMeeting from "./BookedMeeting/BookedMeeting";
 
 const BookedMeetings = (props) => {
-  let header = "No meetings for the day.";
+  let header = "No upcoming meetings.";
 
   // redux
   const users = useSelector((state) => state.auth.users);
@@ -44,7 +44,6 @@ const BookedMeetings = (props) => {
         />
       );
     } else {
-      header = "No meetings for the day.";
       return (
         <span
           key={meeting[1].user + props.roomId + startHrs + endMins + endHrs}
