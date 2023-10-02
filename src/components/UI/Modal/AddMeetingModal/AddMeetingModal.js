@@ -47,7 +47,7 @@ const AddMeetingModal = () => {
     e.preventDefault();
     const formFields = e.target;
 
-    let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
+    //let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
     let roomId = selectedRoomState;
     let meetingName = formFields[0].value;
     let meetingDescription = formFields[1].value;
@@ -58,7 +58,7 @@ const AddMeetingModal = () => {
     let attendees = formFields[4].value;
 
     let data = JSON.stringify({
-      user: loggedInUser,
+      //user: loggedInUser,
       room: roomId,
       title: meetingName,
       description: meetingDescription,

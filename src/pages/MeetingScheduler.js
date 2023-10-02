@@ -10,6 +10,7 @@ import AddMeetingModal from "../components/UI/Modal/AddMeetingModal/AddMeetingMo
 import CustomAlert from "../components/UI/Alert/CustomAlert";
 
 import { meetingActions } from "../store/meetingStore";
+import { useLocalState } from "../store/authStore";
 
 const MeetingScheduler = () => {
   const navigate = useNavigate();
@@ -22,24 +23,37 @@ const MeetingScheduler = () => {
     (state) => state.meetings.selectedMeetingDate
   );
 
+  const[jwt, setJwt] = useLocalState("", "jwt");
+
   useEffect(() => {
-    // check if someone is logged in, if not then redirect
-    const loggedInUser = localStorage.getItem("user");
+    // // check if someone is logged in, if not then redirect
+    //const loggedInUser = localStorage.getItem("jwt");
 
-    // if someone is logged out on page load then go to landing for login
-    if (!loggedInUser) {
-      navigate("/landing");
-    }
+    // // if someone is logged out on page load then go to landing for login
+    // if (!loggedInUser) {
+    //   navigate("/landing");
+    // }
+    // function get (){
+    //   fetch("/meetings" + selectedMeetingDate, {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authentication: `Bearer ${jwt}`
+    //     },
+    //     method: "GET"
+    //   });
+    // }
 
-    // grab all the meetings for the set date
+    //grab all the meetings for the set date
     let config = {
       method: "get",
       maxBodyLength: Infinity,
       url: "http://localhost:8080/meetings/" + selectedMeetingDate,
       headers: {
         "Content-Type": "application/json",
+        Authentication : `Bearer ${jwt}`
       },
     };
+    console.log(config.headers)
 
     axios
       .request(config)

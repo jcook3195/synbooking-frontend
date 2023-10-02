@@ -1,81 +1,83 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
 
-import Button from "../UI/Button/Button";
 
-import { authActions } from "../../store/authStore";
+// import React, { useEffect } from "react";
+// import { useNavigate } from "react-router-dom";
+// //import { useSelector, useDispatch } from "react-redux";
 
-import "./Navbar.scss";
+// import Button from "../UI/Button/Button";
 
-const Navbar = () => {
-  const navigate = useNavigate();
+// //import { authActions } from "../../store/authStore";
 
-  // redux
-  const dispatch = useDispatch();
-  const loggedIn = useSelector((state) => state.auth.loggedIn);
+// import "./Navbar.scss";
 
-  const logoutHandler = () => {
-    dispatch(authActions.logout());
-  };
+// const Navbar = () => {
+//   // const navigate = useNavigate();
 
-  const loginHandler = () => {
-    dispatch(authActions.login());
-  };
+//   // redux
+//   // const dispatch = useDispatch();
+//   // const loggedIn = useSelector((state) => state.auth.loggedIn);
 
-  const handleOnClick = () => {
-    localStorage.clear();
+//   // const logoutHandler = () => {
+//   //   dispatch(authActions.logout());
+//   // };
 
-    logoutHandler();
+//   // const loginHandler = () => {
+//   //   dispatch(authActions.login());
+//   // };
 
-    navigate("/landing");
-  };
+//   // const handleOnClick = () => {
+//   //   localStorage.clear();
 
-  useEffect(() => {
-    const loggedInUser = localStorage.getItem("user");
-    if (loggedInUser) {
-      loginHandler();
+//   //   logoutHandler();
 
-      // convert string user local user data back to object
-      // const usrObj = JSON.parse(loggedInUser);
+//   //   navigate("/landing");
+//   // };
 
-      // setUserName(usrObj["userName"]);
-    } else {
-      logoutHandler();
-    }
-  });
+//   // useEffect(() => {
+//   //   const loggedInUser = localStorage.getItem("user");
+//   //   if (loggedInUser) {
+//   //     loginHandler();
 
-  return (
-    <nav className="navbar navbar-dark bg-dark text-light">
-      <div className="container-fluid justify-content-center">
-        {loggedIn ? (
-          <React.Fragment>
-            <div className="login-status d-flex justify-content-center">
-              <div className="login-name">
-                <h2>
-                  {JSON.parse(localStorage.getItem("user"))["userName"]} -&nbsp;
-                </h2>
-              </div>
-              <div className="logout-btn">
-                <Button
-                  type="button"
-                  onClick={handleOnClick}
-                  id="logoutBtn"
-                  classNames="btn-secondary"
-                >
-                  Logout
-                </Button>
-              </div>
-            </div>
-          </React.Fragment>
-        ) : (
-          <div className="login-status">
-            <h2>Please Log In</h2>
-          </div>
-        )}
-      </div>
-    </nav>
-  );
-};
+//   //     // convert string user local user data back to object
+//   //     // const usrObj = JSON.parse(loggedInUser);
 
-export default Navbar;
+//   //     // setUserName(usrObj["userName"]);
+//   //   } else {
+//   //     logoutHandler();
+//   //   }
+//   // });
+
+//   return (
+//     <nav className="navbar navbar-dark bg-dark text-light">
+//       <div className="container-fluid justify-content-center">
+//         {loggedIn ? (
+//           <React.Fragment>
+//             <div className="login-status d-flex justify-content-center">
+//               <div className="login-name">
+//                 <h2>
+//                   {JSON.parse(localStorage.getItem("user"))["userName"]} -&nbsp;
+//                 </h2>
+//               </div>
+//               <div className="logout-btn">
+//                 <Button
+//                   type="button"
+//                   onClick={handleOnClick}
+//                   id="logoutBtn"
+//                   classNames="btn-secondary"
+//                 >
+//                   Logout
+//                 </Button>
+//               </div>
+//             </div>
+//           </React.Fragment>
+//         ) : (
+//           <div className="login-status">
+//             <h2>Please Log In</h2>
+//           </div>
+//         )}
+//       </div>
+//     </nav>
+//   );
+// };
+
+// export default Navbar;
