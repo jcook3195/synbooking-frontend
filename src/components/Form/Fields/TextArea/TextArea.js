@@ -26,7 +26,9 @@ const TextArea = (props) => {
         rows="3"
         placeholder={props.placeholder}
         name={props.name}
-        {...register(props.name, props.validations)}
+        {...register(props.name, {
+          onChange: props.onChange,
+        })}
       ></textarea>
       {err && <div className="invalid-feedback">{props.invalidText}</div>}
     </div>

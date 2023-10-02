@@ -33,15 +33,12 @@ const EditMeetingModal = forwardRef((props, ref) => {
   const selectedMeeting = useSelector(
     (state) => state.meetings.selectedMeeting
   );
-  const selectedStartTime = useSelector(
-    (state) => state.meetings.selectedStartTime
-  );
   const selectedMeetingDate = useSelector(
     (state) => state.meetings.selectedMeetingDate
   );
 
   useEffect(() => {
-    // let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
+    // let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];f
 
     if (selectedMeeting !== null) {
       // get the meeting
@@ -57,7 +54,9 @@ const EditMeetingModal = forwardRef((props, ref) => {
           setTitleVal(res.data.title);
           setDescVal(res.data.description);
           setAttendeesVal(res.data.attendees);
+          dispatch(meetingActions.setMeetingToEdit(res.data));
           dispatch(meetingActions.setSelectedRoom(res.data.room));
+          dispatch(meetingActions.setEditingActive(true));
 
           let start = new Date(res.data.startDateTime);
           let end = new Date(res.data.endDateTime);
@@ -134,6 +133,7 @@ const EditMeetingModal = forwardRef((props, ref) => {
   };
 
   const handleFormSubmit = (e) => {
+    dispatch(alertActions.showLoader(true));
     let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
     let roomId = selectedRoomState;
     let meetingName = e.editMeetingName;
@@ -157,8 +157,6 @@ const EditMeetingModal = forwardRef((props, ref) => {
       attendees: attendees,
     });
 
-    console.log("data", data);
-
     // update the meeting
     let config = {
       method: "put",
@@ -181,21 +179,28 @@ const EditMeetingModal = forwardRef((props, ref) => {
         // show and hide alert after 5 seconds
         alertShowHandler("success", "Meeting was updated successfully.");
         alertHideTimeout(5000);
+        // dispatch(meetingActions.setEditingActive(false));
+        dispatch(alertActions.showLoader(false));
+        dispatch(meetingActions.setMeetingToEdit(null));
+        dispatch(meetingActions.resetStartTimes());
       })
       .catch((err) => {
         console.error(err);
         alertShowHandler("danger", "There was an error updating a meeting.");
         alertHideTimeout(5000);
+        dispatch(alertActions.showLoader(false));
+        dispatch(meetingActions.setMeetingToEdit(null));
       });
   };
 
-  const onChangeHandler = (e) => {
+  const startTimeChangeHandler = (e) => {
     // get the selected date from the date picker and the start time, combine them into a new Date and set the state
     let startDateTime = selectedMeetingDate + " " + e.target.value;
 
     setStartTimeVal(e.target.value);
     dispatch(meetingActions.setSelectedStartTime(startDateTime));
     dispatch(meetingActions.setMeetingStartTime(startDateTime));
+    dispatch(meetingActions.setEditingActive(false));
   };
 
   return (
@@ -237,7 +242,8 @@ const EditMeetingModal = forwardRef((props, ref) => {
             name="editMeetingStartTimeSelect"
             label="Start Time"
             startEnd="start"
-            onChange={onChangeHandler}
+            invocation="edit"
+            onChange={startTimeChangeHandler}
             value={startTimeVal}
             ref={ref}
           />
@@ -246,7 +252,7 @@ const EditMeetingModal = forwardRef((props, ref) => {
             name="editMeetingEndTimeSelect"
             label="End Time"
             startEnd="end"
-            startTime={selectedStartTime}
+            invocation="edit"
             onChange={endTimeInputChangeHandler}
             value={endTimeVal}
             ref={ref}

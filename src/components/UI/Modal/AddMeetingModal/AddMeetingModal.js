@@ -24,9 +24,6 @@ const AddMeetingModal = forwardRef((props, ref) => {
   const dispatch = useDispatch();
   const modalState = useSelector((state) => state.modals.showAddModal);
   const selectedRoomState = useSelector((state) => state.meetings.selectedRoom);
-  const selectedStartTime = useSelector(
-    (state) => state.meetings.selectedStartTime
-  );
   const selectedMeetingDate = useSelector(
     (state) => state.meetings.selectedMeetingDate
   );
@@ -48,6 +45,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
   };
 
   const handleFormSubmit = (e) => {
+    dispatch(alertActions.showLoader(true));
     let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
     let roomId = selectedRoomState;
     let meetingName = e.newMeetingName;
@@ -80,6 +78,8 @@ const AddMeetingModal = forwardRef((props, ref) => {
       data: data,
     };
 
+    console.log(e.meetingEndTimeSelect);
+
     axios
       .request(config)
       .then((res) => {
@@ -90,15 +90,18 @@ const AddMeetingModal = forwardRef((props, ref) => {
         // show and hide alert after 5 seconds
         alertShowHandler("success", "Meeting was added successfully.");
         alertHideTimeout(5000);
+        dispatch(alertActions.showLoader(false));
+        dispatch(meetingActions.resetStartTimes());
       })
       .catch((err) => {
         console.error(err);
         alertShowHandler("danger", "There was an error adding a meeting.");
         alertHideTimeout(5000);
+        dispatch(alertActions.showLoader(false));
       });
   };
 
-  const onChangeHandler = (e) => {
+  const startTimeChangeHandler = (e) => {
     // get the selected date from the date picker and the start time, combine them into a new Date and set the state
     let startDateTime = selectedMeetingDate + " " + e.target.value;
 
@@ -141,7 +144,8 @@ const AddMeetingModal = forwardRef((props, ref) => {
             name="meetingStartTimeSelect"
             label="Start Time"
             startEnd="start"
-            onChange={onChangeHandler}
+            invocation="add"
+            onChange={startTimeChangeHandler}
             ref={ref}
           />
           <TimeSelect
@@ -149,7 +153,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
             name="meetingEndTimeSelect"
             label="End Time"
             startEnd="end"
-            startTime={selectedStartTime}
+            invocation="add"
             ref={ref}
           />
           <TextArea

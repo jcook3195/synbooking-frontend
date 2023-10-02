@@ -3,6 +3,11 @@ import { createSlice, current } from "@reduxjs/toolkit";
 let todayString = new Date().toISOString().split("T")[0];
 let nowTimeHours = new Date().getHours().toString();
 let nowTimeMinutes = new Date().getMinutes().toString();
+
+if (nowTimeMinutes.length < 2) {
+  nowTimeMinutes = "0" + nowTimeMinutes;
+}
+
 let nowTimeString = nowTimeHours + ":" + nowTimeMinutes;
 
 const initialState = {
@@ -12,6 +17,8 @@ const initialState = {
   selectedMeetingDate: todayString,
   selectedStartTime: todayString + " " + nowTimeString,
   meetingStartTime: null,
+  meetingToEdit: null,
+  editingActive: false,
   rooms: {
     A: {
       id: "65008c61e49aed0cfc36f0a1",
@@ -154,6 +161,12 @@ const meetingSlice = createSlice({
     },
     setMeetingStartTime(state, data) {
       state.meetingStartTime = data.payload;
+    },
+    setMeetingToEdit(state, data) {
+      state.meetingToEdit = data.payload;
+    },
+    setEditingActive(state, data) {
+      state.editingActive = data.payload;
     },
     updateRoomAvailability(state) {
       // get current state of meetings and rooms
@@ -365,6 +378,20 @@ const meetingSlice = createSlice({
 
       // update the rooms
       state.rooms = newRooms;
+    },
+    resetStartTimes(state) {
+      let todayString = new Date().toISOString().split("T")[0];
+      let nowTimeHours = new Date().getHours().toString();
+      let nowTimeMinutes = new Date().getMinutes().toString();
+
+      if (nowTimeMinutes.length < 2) {
+        nowTimeMinutes = "0" + nowTimeMinutes;
+      }
+
+      let nowTimeString = nowTimeHours + ":" + nowTimeMinutes;
+
+      state.selectedStartTime = todayString + " " + nowTimeString;
+      state.meetingStartTime = null;
     },
   },
 });
