@@ -37,7 +37,14 @@ const BookedMeetings = (props) => {
 
       return (
         <BookedMeeting
-          key={meeting[1].user + props.roomId + endHrs + startMins + startHrs}
+          key={
+            meeting[1].user +
+            props.roomId +
+            meeting[1].id +
+            endHrs +
+            startMins +
+            startHrs
+          }
           user={users[meeting[1].user]}
           startTime={startHrs + ":" + startMins}
           endTime={endHrs + ":" + endMins}
@@ -46,7 +53,14 @@ const BookedMeetings = (props) => {
     } else {
       return (
         <span
-          key={meeting[1].user + props.roomId + startHrs + endMins + endHrs}
+          key={
+            meeting[1].user +
+            meeting[1].id +
+            props.roomId +
+            startHrs +
+            endMins +
+            endHrs
+          }
         ></span>
       );
     }

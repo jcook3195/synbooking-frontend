@@ -164,6 +164,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
             name="meetingAttendeesField"
             label="Attendees"
             placeholder="Add a comma seperated list of emails"
+            invocation="add"
             ref={ref}
           />
           <Button

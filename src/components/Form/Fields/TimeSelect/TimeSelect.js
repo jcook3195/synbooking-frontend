@@ -13,18 +13,18 @@ const TimeSelect = (props) => {
   const selectedStartTime = useSelector(
     (state) => state.meetings.selectedStartTime
   );
-
   const selectedMeetingDate = useSelector(
     (state) => state.meetings.selectedMeetingDate
   );
-
   const meetingStartTime = useSelector(
     (state) => state.meetings.meetingStartTime
   );
-
   const meetingToEdit = useSelector((state) => state.meetings.meetingToEdit);
   const editingActive = useSelector((state) => state.meetings.editingActive);
   const activeMeetings = useSelector((state) => state.meetings.activeMeetings);
+  const addStartChanged = useSelector(
+    (state) => state.meetings.addStartChanged
+  );
 
   let now;
 
@@ -128,12 +128,6 @@ const TimeSelect = (props) => {
     timesArray.shift(); // remove the first time as a possible end time
     timesArray.push("18:00"); // always need this end time
   }
-
-  // if (props.invocation === "add") {
-  //   setValue(props.name, timesArray[0]);
-
-  //   console.log("set the value to " + timesArray[0]);
-  // }
 
   if (meetingToEdit !== null) {
     let start = new Date(meetingToEdit.startDateTime);
