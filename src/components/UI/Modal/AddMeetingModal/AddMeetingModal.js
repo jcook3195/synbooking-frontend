@@ -27,6 +27,9 @@ const AddMeetingModal = forwardRef((props, ref) => {
   const selectedMeetingDate = useSelector(
     (state) => state.meetings.selectedMeetingDate
   );
+  const selectedRoomName = useSelector(
+    (state) => state.meetings.selectedRoomName
+  );
 
   const modalHideHandler = () => {
     dispatch(modalActions.hideAddModal());
@@ -111,7 +114,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
 
   return (
     <CustomModal
-      heading="Add a Meeting"
+      heading={"Add a meeting for room " + selectedRoomName}
       show={modalState}
       onHide={modalHideHandler}
     >

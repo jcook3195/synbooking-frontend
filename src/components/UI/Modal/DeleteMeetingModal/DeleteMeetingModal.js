@@ -17,6 +17,12 @@ const DeleteMeetingModal = () => {
   const selectedMeeting = useSelector(
     (state) => state.meetings.selectedMeeting
   );
+  const selectedRoomName = useSelector(
+    (state) => state.meetings.selectedRoomName
+  );
+  const selectedEditMeetingDate = useSelector(
+    (state) => state.meetings.selectedEditMeetingDate
+  );
 
   const modalHideHandler = () => {
     dispatch(modalActions.hideDeleteModal());
@@ -64,9 +70,28 @@ const DeleteMeetingModal = () => {
       });
   };
 
+  let editMeetingDate = new Date(selectedEditMeetingDate);
+  let editMeetingHrs = editMeetingDate.getHours().toString();
+  let editMeetingMins = editMeetingDate.getMinutes().toString();
+
+  if (editMeetingHrs < 2) {
+    editMeetingHrs = "0" + editMeetingHrs;
+  }
+
+  if (editMeetingMins < 2) {
+    editMeetingMins = "0" + editMeetingMins;
+  }
+
   return (
     <CustomModal
-      heading="Delete a Meeting"
+      heading={
+        "Delete " +
+        editMeetingHrs +
+        ":" +
+        editMeetingMins +
+        " meeting from room " +
+        selectedRoomName
+      }
       show={modalState}
       onHide={modalHideHandler}
     >

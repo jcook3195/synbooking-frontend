@@ -13,6 +13,8 @@ let nowTimeString = nowTimeHours + ":" + nowTimeMinutes;
 const initialState = {
   meetings: {},
   selectedRoom: null,
+  selectedRoomName: null,
+  selectedEditMeetingDate: null,
   selectedMeeting: null,
   selectedMeetingDate: todayString,
   selectedStartTime: todayString + " " + nowTimeString,
@@ -149,9 +151,29 @@ const meetingSlice = createSlice({
     },
     setSelectedRoom(state, data) {
       state.selectedRoom = data.payload;
+
+      Object.entries(state.rooms).forEach((room) => {
+        if (data.payload === current(room[1]).id) {
+          state.selectedRoomName = room[0];
+        }
+      });
     },
     setSelectedMeeting(state, data) {
       state.selectedMeeting = data.payload;
+
+      let roomId;
+      Object.entries(state.meetings).forEach((meeting) => {
+        if (data.payload === current(meeting[1]).id) {
+          roomId = current(meeting[1]).room;
+          state.selectedEditMeetingDate = current(meeting[1]).startDateTime;
+        }
+      });
+
+      Object.entries(state.rooms).forEach((room) => {
+        if (current(room[1]).id === roomId) {
+          state.selectedRoomName = room[0];
+        }
+      });
     },
     setSelectedMeetingDate(state, data) {
       state.selectedMeetingDate = data.payload;
