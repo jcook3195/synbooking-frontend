@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useForm, FormProvider } from "react-hook-form";
 import axios from "axios";
@@ -17,6 +17,10 @@ import { meetingActions } from "../../../../store/meetingStore";
 import "./AddMeetingModal.scss";
 
 const AddMeetingModal = forwardRef((props, ref) => {
+  const [emailsState, setEmailsState] = useState([]);
+  const [titleVal, setTitleVal] = useState("");
+  const [descVal, setDescVal] = useState("");
+  const [attendeesVal, setAttendeesVal] = useState("");
   // react-hook-form validations
   const methods = useForm();
 
@@ -112,6 +116,30 @@ const AddMeetingModal = forwardRef((props, ref) => {
     dispatch(meetingActions.setMeetingStartTime(startDateTime));
   };
 
+  const titleInputChangeHandler = (e) => {
+    setTitleVal(e.target.value);
+  };
+
+  const descInputChangeHandler = (e) => {
+    setDescVal(e.target.value);
+  };
+
+  const attendeesInputChangeHandler = (e) => {
+    setAttendeesVal(e.target.value);
+  };
+
+  const handleEmailKeyDown = (e) => {
+    if (["Enter", "Tab", ","].includes(e.key)) {
+      e.preventDefault();
+
+      let email = e.target.value;
+
+      setEmailsState((emailsState) => [...emailsState, email]);
+
+      console.log(email);
+    }
+  };
+
   return (
     <CustomModal
       heading={"Add a meeting for room " + selectedRoomName}
@@ -134,12 +162,16 @@ const AddMeetingModal = forwardRef((props, ref) => {
             name="newMeetingName"
             placeholder="Meeting Name"
             invalidText="Please enter a name for the meeting."
+            onChange={titleInputChangeHandler}
+            value={titleVal}
           />
           <TextArea
             id="meetingDescriptionField"
             name="meetingDescriptionField"
             label="Description"
             placeholder="Please describe what this meeting is about"
+            onChange={descInputChangeHandler}
+            value={descVal}
             ref={ref}
           />
           <TimeSelect
@@ -165,8 +197,12 @@ const AddMeetingModal = forwardRef((props, ref) => {
             label="Attendees"
             placeholder="Add a comma seperated list of emails"
             invocation="add"
+            onKeyDown={handleEmailKeyDown}
+            onChange={attendeesInputChangeHandler}
+            value={attendeesVal}
             ref={ref}
           />
+          {emailsState}
           <Button
             type="submit"
             id="addNewMeetingSubmitBtn"

@@ -25,7 +25,9 @@ const Input = (props) => {
         className={"form-control " + props.classNames + errClass}
         placeholder={props.placeholder}
         onChange={props.onChange}
-        {...register(props.name, props.validations)}
+        {...register(props.name, props.validations, {
+          onChange: props.onChange,
+        })}
       />
       {err && <div className="invalid-feedback">{props.invalidText}</div>}
     </div>

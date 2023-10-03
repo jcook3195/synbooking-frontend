@@ -26,6 +26,7 @@ const TextArea = (props) => {
         rows="3"
         placeholder={props.placeholder}
         name={props.name}
+        onKeyDown={props.onKeyDown}
         {...register(props.name, {
           onChange: props.onChange,
         })}
