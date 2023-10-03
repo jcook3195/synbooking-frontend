@@ -8,39 +8,9 @@ import Navbar from "./components/Nav/Navbar";
 import "./App.scss";
 import MeetingScheduler from "./pages/MeetingScheduler";
 import Landing from "./pages/Landing";
-import PrivateRoute from "./components/Route/Routes";
+import PrivateRoute from "./components/Route/routes";
 
 function App() {
-//   //Eric Testing Connectivity
-//   const [jwt, setJwt] = useLocalState("", "jwt");
-
-//   useEffect(() => {
-//     if (!jwt){
-//       const reqBody = {
-//         "username" : "Eric123",
-//         "password" : "1223"
-//       }
-    
-//       /*package.json -> proxy*/
-//       fetch("api/auth/login", {
-//         headers: {
-//           "Content-Type" : "application/json"
-//         },
-//         method: "post",
-//         body: JSON.stringify(reqBody)
-//       }).then((response) => Promise.all([response.json(), response.headers]))
-//       .then(([body, headers]) => {
-//         setJwt(headers.get("authorization"));
-//         console.log(jwt);
-//         //console.log(body);
-//       });
-//     } 
-// })
-
-// useEffect(() => {
-//   console.log(`JWT is: ${jwt}`);
-// }, [jwt]);
-//   //=======================
     /*    <React.Fragment>
       <Router>
         <Navbar />

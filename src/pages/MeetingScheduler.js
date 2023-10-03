@@ -23,26 +23,12 @@ const MeetingScheduler = () => {
     (state) => state.meetings.selectedMeetingDate
   );
 
-  const[jwt, setJwt] = useLocalState("", "jwt");
+  //const[jwt, setJwt] = useLocalState("", "jwt");
+
+
 
   useEffect(() => {
-    // // check if someone is logged in, if not then redirect
-    //const loggedInUser = localStorage.getItem("jwt");
-
-    // // if someone is logged out on page load then go to landing for login
-    // if (!loggedInUser) {
-    //   navigate("/landing");
-    // }
-    // function get (){
-    //   fetch("/meetings" + selectedMeetingDate, {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authentication: `Bearer ${jwt}`
-    //     },
-    //     method: "GET"
-    //   });
-    // }
-
+    
     //grab all the meetings for the set date
     let config = {
       method: "get",
@@ -50,10 +36,10 @@ const MeetingScheduler = () => {
       url: "http://localhost:8080/meetings/" + selectedMeetingDate,
       headers: {
         "Content-Type": "application/json",
-        Authentication : `Bearer ${jwt}`
+        //Authentication : `Bearer ${jwt}`
       },
     };
-    console.log(config.headers)
+    console.log(config)
 
     axios
       .request(config)
