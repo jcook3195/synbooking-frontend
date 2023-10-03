@@ -30,11 +30,17 @@ const EditMeetingModal = forwardRef((props, ref) => {
   const dispatch = useDispatch();
   const modalState = useSelector((state) => state.modals.showEditModal);
   const selectedRoomState = useSelector((state) => state.meetings.selectedRoom);
+  const selectedRoomName = useSelector(
+    (state) => state.meetings.selectedRoomName
+  );
   const selectedMeeting = useSelector(
     (state) => state.meetings.selectedMeeting
   );
   const selectedMeetingDate = useSelector(
     (state) => state.meetings.selectedMeetingDate
+  );
+  const selectedEditMeetingDate = useSelector(
+    (state) => state.meetings.selectedEditMeetingDate
   );
 
   useEffect(() => {
@@ -201,15 +207,36 @@ const EditMeetingModal = forwardRef((props, ref) => {
     // get the selected date from the date picker and the start time, combine them into a new Date and set the state
     let startDateTime = selectedMeetingDate + " " + e.target.value;
 
+    console.log(e.target.value);
+
     setStartTimeVal(e.target.value);
     dispatch(meetingActions.setSelectedStartTime(startDateTime));
     dispatch(meetingActions.setMeetingStartTime(startDateTime));
     dispatch(meetingActions.setEditingActive(false));
   };
 
+  let editMeetingDate = new Date(selectedEditMeetingDate);
+  let editMeetingHrs = editMeetingDate.getHours().toString();
+  let editMeetingMins = editMeetingDate.getMinutes().toString();
+
+  if (editMeetingHrs < 2) {
+    editMeetingHrs = "0" + editMeetingHrs;
+  }
+
+  if (editMeetingMins < 2) {
+    editMeetingMins = "0" + editMeetingMins;
+  }
+
   return (
     <CustomModal
-      heading="Edit a Meeting"
+      heading={
+        "Edit " +
+        editMeetingHrs +
+        ":" +
+        editMeetingMins +
+        " meeting in room " +
+        selectedRoomName
+      }
       show={modalState}
       onHide={modalHideHandler}
     >

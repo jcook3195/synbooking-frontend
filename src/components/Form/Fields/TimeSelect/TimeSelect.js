@@ -129,10 +129,11 @@ const TimeSelect = (props) => {
     timesArray.push("18:00"); // always need this end time
   }
 
-  if (props.invocation === "add") {
-    console.log("adding");
-    setValue(props.name, timesArray[0]);
-  }
+  // if (props.invocation === "add") {
+  //   setValue(props.name, timesArray[0]);
+
+  //   console.log("set the value to " + timesArray[0]);
+  // }
 
   if (meetingToEdit !== null) {
     let start = new Date(meetingToEdit.startDateTime);
