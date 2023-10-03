@@ -21,6 +21,8 @@ const initialState = {
   meetingStartTime: null,
   meetingToEdit: null,
   editingActive: false,
+  titleFieldErr: false,
+  emailFieldErr: false,
   rooms: {
     A: {
       id: "65008c61e49aed0cfc36f0a1",
@@ -414,6 +416,12 @@ const meetingSlice = createSlice({
 
       state.selectedStartTime = todayString + " " + nowTimeString;
       state.meetingStartTime = null;
+    },
+    setTitleFieldErr(state, data) {
+      state.titleFieldErr = data.payload;
+    },
+    setEmailFieldErr(state, data) {
+      state.emailFieldErr = data.payload;
     },
   },
 });

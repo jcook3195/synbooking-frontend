@@ -6,4 +6,17 @@
   p {
     color: #000;
   }
+
+  .badge {
+    margin-bottom: 4px;
+    margin-right: 4px;
+
+    .pill-btn {
+      padding: 1px;
+      margin: 0 6px;
+      border-radius: 10px;
+      height: 16px;
+      line-height: 1px;
+    }
+  }
 }

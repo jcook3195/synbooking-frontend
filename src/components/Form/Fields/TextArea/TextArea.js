@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { useFormContext } from "react-hook-form";
 
 const TextArea = (props) => {
@@ -11,9 +12,14 @@ const TextArea = (props) => {
   // set the form field value
   setValue(props.name, props.value);
 
+  const emailFieldErr = useSelector((state) => state.meetings.emailFieldErr);
+
   // check if the name of the input is contained in the error object for displaying err class and message
-  const err = Object.keys(errors).includes(props.name) ? true : false;
-  const errClass = err ? " is-invalid" : "";
+  // const err = Object.keys(errors).includes(props.name) ? true : false;
+  const errClass =
+    emailFieldErr && props.name === "meetingAttendeesField"
+      ? " is-invalid"
+      : "";
 
   return (
     <div className="form-group mb-3">
@@ -31,7 +37,11 @@ const TextArea = (props) => {
           onChange: props.onChange,
         })}
       ></textarea>
-      {err && <div className="invalid-feedback">{props.invalidText}</div>}
+      {emailFieldErr && props.name === "meetingAttendeesField" ? (
+        <div className="invalid-feedback">{props.invalidText}</div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

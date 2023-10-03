@@ -21,6 +21,8 @@ const AddMeetingModal = forwardRef((props, ref) => {
   const [titleVal, setTitleVal] = useState("");
   const [descVal, setDescVal] = useState("");
   const [attendeesVal, setAttendeesVal] = useState("");
+  const [titleValid, setTitleValid] = useState(false);
+
   // react-hook-form validations
   const methods = useForm();
 
@@ -53,6 +55,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
 
   const handleFormSubmit = (e) => {
     dispatch(alertActions.showLoader(true));
+
     let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
     let roomId = selectedRoomState;
     let meetingName = e.newMeetingName;
@@ -63,7 +66,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
     let endDateTime = new Date(
       selectedMeetingDate + " " + e.meetingEndTimeSelect
     );
-    let attendees = e.meetingAttendeesField;
+    let attendees = emailsState.toString();
 
     let data = JSON.stringify({
       user: loggedInUser,
@@ -85,27 +88,33 @@ const AddMeetingModal = forwardRef((props, ref) => {
       data: data,
     };
 
-    console.log(e.meetingEndTimeSelect);
+    if (titleValid) {
+      dispatch(meetingActions.setTitleFieldErr(false));
 
-    axios
-      .request(config)
-      .then((res) => {
-        console.log(JSON.stringify(res.data));
+      axios
+        .request(config)
+        .then((res) => {
+          console.log(JSON.stringify(res.data));
 
-        // close the modal after meeting is added successfully
-        modalHideHandler();
-        // show and hide alert after 5 seconds
-        alertShowHandler("success", "Meeting was added successfully.");
-        alertHideTimeout(5000);
-        dispatch(alertActions.showLoader(false));
-        dispatch(meetingActions.resetStartTimes());
-      })
-      .catch((err) => {
-        console.error(err);
-        alertShowHandler("danger", "There was an error adding a meeting.");
-        alertHideTimeout(5000);
-        dispatch(alertActions.showLoader(false));
-      });
+          // close the modal after meeting is added successfully
+          modalHideHandler();
+          // show and hide alert after 5 seconds
+          alertShowHandler("success", "Meeting was added successfully.");
+          alertHideTimeout(5000);
+          dispatch(alertActions.showLoader(false));
+          dispatch(meetingActions.resetStartTimes());
+          setEmailsState([]);
+        })
+        .catch((err) => {
+          console.error(err);
+          alertShowHandler("danger", "There was an error adding a meeting.");
+          alertHideTimeout(5000);
+          dispatch(alertActions.showLoader(false));
+        });
+    } else {
+      dispatch(meetingActions.setTitleFieldErr(true));
+      dispatch(alertActions.showLoader(false));
+    }
   };
 
   const startTimeChangeHandler = (e) => {
@@ -118,6 +127,11 @@ const AddMeetingModal = forwardRef((props, ref) => {
 
   const titleInputChangeHandler = (e) => {
     setTitleVal(e.target.value);
+    if (e.target.value !== "") {
+      setTitleValid(true);
+    } else {
+      setTitleValid(false);
+    }
   };
 
   const descInputChangeHandler = (e) => {
@@ -128,16 +142,36 @@ const AddMeetingModal = forwardRef((props, ref) => {
     setAttendeesVal(e.target.value);
   };
 
+  const validateEmail = (email) => {
+    return email
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
   const handleEmailKeyDown = (e) => {
     if (["Enter", "Tab", ","].includes(e.key)) {
       e.preventDefault();
 
       let email = e.target.value;
 
-      setEmailsState((emailsState) => [...emailsState, email]);
+      if (validateEmail(email)) {
+        setEmailsState((emailsState) => [...emailsState, email]);
 
-      console.log(email);
+        dispatch(meetingActions.setEmailFieldErr(false));
+
+        setAttendeesVal("");
+        // console.log(email);
+      } else {
+        console.log("not a valid email");
+        dispatch(meetingActions.setEmailFieldErr(true));
+      }
     }
+  };
+
+  const handleEmailDelete = (deleteEmail) => {
+    setEmailsState(emailsState.filter((email) => email !== deleteEmail));
   };
 
   return (
@@ -152,9 +186,6 @@ const AddMeetingModal = forwardRef((props, ref) => {
           onSubmit={methods.handleSubmit(handleFormSubmit)}
         >
           <Input
-            validations={{
-              required: true,
-            }}
             ref={ref}
             label="Meeting Name"
             id="newMeetingName"
@@ -196,13 +227,30 @@ const AddMeetingModal = forwardRef((props, ref) => {
             name="meetingAttendeesField"
             label="Attendees"
             placeholder="Add a comma seperated list of emails"
-            invocation="add"
+            invalidText="This is not a valid email."
             onKeyDown={handleEmailKeyDown}
             onChange={attendeesInputChangeHandler}
             value={attendeesVal}
             ref={ref}
           />
-          {emailsState}
+          <div className="wrapper">
+            {emailsState.map((email) => {
+              return (
+                <span className="badge rounded-pill bg-primary" key={email}>
+                  {email}
+
+                  <button
+                    type="button"
+                    className="btn btn-light pill-btn"
+                    onClick={() => handleEmailDelete(email)}
+                  >
+                    &times;
+                  </button>
+                </span>
+              );
+              // console.log("email: ", email);
+            })}
+          </div>
           <Button
             type="submit"
             id="addNewMeetingSubmitBtn"
