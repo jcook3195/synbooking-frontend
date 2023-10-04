@@ -7,7 +7,8 @@ const BookedMeetings = (props) => {
   let header = "No upcoming meetings.";
 
   // redux
-  const users = useSelector((state) => state.auth.users);
+  //const users = useSelector((state) => state.auth.users);
+  //console.log(users);
   const meetings = useSelector((state) => state.meetings.meetings);
   const now = new Date();
 
@@ -45,7 +46,7 @@ const BookedMeetings = (props) => {
             startMins +
             startHrs
           }
-          user={users[meeting[1].user]}
+          //user={users[meeting[1].user]}
           startTime={startHrs + ":" + startMins}
           endTime={endHrs + ":" + endMins}
         />

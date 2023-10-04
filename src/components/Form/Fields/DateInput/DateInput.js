@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { meetingActions } from "../../../../store/meetingStore";
 import { alertActions } from "../../../../store/alertStore";
+import { useLocalState } from "../../../../store/authStore";
 
 const DateInput = (props) => {
   // redux
@@ -11,6 +12,7 @@ const DateInput = (props) => {
   const selectedMeetingDate = useSelector(
     (state) => state.meetings.selectedMeetingDate
   );
+  const [jwt, setJwt] = useLocalState("", "jwt");
 
   // only let meetings be booked one week ahead of time
   let today = new Date();
@@ -37,6 +39,7 @@ const DateInput = (props) => {
       url: "http://localhost:8080/meetings/" + selectedMeetingDate,
       headers: {
         "Content-Type": "application/json",
+        Authorization: `bearer ${jwt}`
       },
     };
 
