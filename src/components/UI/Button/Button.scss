@@ -3,3 +3,18 @@ button {
     margin-top: -5px;
   }
 }
+
+.btn {
+  &.btn-primary {
+    background-color: #6d72c3 !important;
+  }
+
+  &.btn-secondary {
+    background-color: #cac4ce !important;
+    color: #000 !important;
+  }
+
+  &.btn-danger {
+    background-color: #f4442e !important;
+  }
+}

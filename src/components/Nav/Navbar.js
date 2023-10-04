@@ -46,7 +46,7 @@ const Navbar = () => {
   });
 
   return (
-    <nav className="navbar navbar-dark bg-dark text-light">
+    <nav className="navbar text-light">
       <div className="container-fluid justify-content-center">
         {loggedIn ? (
           <React.Fragment>

@@ -25,11 +25,11 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #22333b;
+      background-color: #292f36;
       color: #fff;
 
       .building-room {
-        background-color: #55a630;
+        background-color: #22c36d;
         color: #fff;
         text-decoration: none;
         font-weight: 600;
@@ -40,7 +40,7 @@
         position: absolute;
 
         &:hover {
-          background-color: #55a630;
+          background-color: rgb(25, 138, 75);
           border: 2px solid #fff;
         }
 
@@ -55,7 +55,7 @@
         }
 
         &.unavailable {
-          background-color: #d90429 !important;
+          background-color: #f4442e !important;
         }
 
         &#room-a {
