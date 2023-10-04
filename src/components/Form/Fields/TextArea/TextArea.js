@@ -29,7 +29,7 @@ const TextArea = (props) => {
       <textarea
         className={"form-control" + errClass}
         id={props.id}
-        rows="3"
+        rows={props.rows}
         placeholder={props.placeholder}
         name={props.name}
         onKeyDown={props.onKeyDown}

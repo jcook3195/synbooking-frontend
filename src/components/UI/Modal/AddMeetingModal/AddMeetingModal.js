@@ -1,6 +1,7 @@
 import React, { forwardRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useForm, FormProvider } from "react-hook-form";
+import { X } from "react-bootstrap-icons";
 import axios from "axios";
 
 import CustomModal from "../CustomModal";
@@ -201,6 +202,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
             name="meetingDescriptionField"
             label="Description"
             placeholder="Please describe what this meeting is about"
+            rows={3}
             onChange={descInputChangeHandler}
             value={descVal}
             ref={ref}
@@ -225,18 +227,22 @@ const AddMeetingModal = forwardRef((props, ref) => {
           <TextArea
             id="meetingAttendeesField"
             name="meetingAttendeesField"
-            label="Attendees"
-            placeholder="Add a comma seperated list of emails"
+            label="Attendees (Enter an email and press 'Enter', 'Tab', or ',')"
+            placeholder="Add one valid email at a time."
             invalidText="This is not a valid email."
+            rows={1}
             onKeyDown={handleEmailKeyDown}
             onChange={attendeesInputChangeHandler}
             value={attendeesVal}
             ref={ref}
           />
-          <div className="wrapper">
+          <div className="email-badge-container">
             {emailsState.map((email) => {
               return (
-                <span className="badge rounded-pill bg-primary" key={email}>
+                <span
+                  className="badge rounded-pill email-pill"
+                  key={email + new Date()}
+                >
                   {email}
 
                   <button
@@ -244,11 +250,10 @@ const AddMeetingModal = forwardRef((props, ref) => {
                     className="btn btn-light pill-btn"
                     onClick={() => handleEmailDelete(email)}
                   >
-                    &times;
+                    <X />
                   </button>
                 </span>
               );
-              // console.log("email: ", email);
             })}
           </div>
           <Button

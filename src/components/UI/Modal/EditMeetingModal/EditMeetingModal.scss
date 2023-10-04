@@ -1,0 +1,28 @@
+#editMeetingForm {
+  .email-badge-container {
+    margin-bottom: 1rem;
+
+    .badge {
+      margin-bottom: 4px;
+      margin-right: 4px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+
+      &.email-pill {
+        background-color: #22c36d;
+      }
+
+      .pill-btn {
+        padding: 0px;
+        margin: 0 6px;
+        border-radius: 10px;
+        height: 16px;
+
+        svg {
+          margin-top: -13px;
+        }
+      }
+    }
+  }
+}
