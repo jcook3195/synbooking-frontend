@@ -1,6 +1,7 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useForm, FormProvider } from "react-hook-form";
+import { X } from "react-bootstrap-icons";
 import axios from "axios";
 
 import CustomModal from "../CustomModal";
@@ -18,6 +19,12 @@ import { useLocalState } from "../../../../store/useLocalStore";
 import "./AddMeetingModal.scss";
 
 const AddMeetingModal = forwardRef((props, ref) => {
+  const [emailsState, setEmailsState] = useState([]);
+  const [titleVal, setTitleVal] = useState("");
+  const [descVal, setDescVal] = useState("");
+  const [attendeesVal, setAttendeesVal] = useState("");
+  const [titleValid, setTitleValid] = useState(false);
+
   // react-hook-form validations
   const methods = useForm();
 
@@ -61,7 +68,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
     let endDateTime = new Date(
       selectedMeetingDate + " " + e.meetingEndTimeSelect
     );
-    let attendees = e.meetingAttendeesField;
+    let attendees = emailsState.toString();
 
     let data = JSON.stringify({
       //user: loggedInUser,
@@ -79,32 +86,38 @@ const AddMeetingModal = forwardRef((props, ref) => {
       url: "http://localhost:8080/meetings",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `bearer ${jwt}`
+        Authorization: `bearer ${jwt}`,
       },
       data: data,
     };
 
-    console.log(e.meetingEndTimeSelect);
+    if (titleValid) {
+      dispatch(meetingActions.setTitleFieldErr(false));
 
-    axios
-      .request(config)
-      .then((res) => {
-        console.log(JSON.stringify(res.data));
+      axios
+        .request(config)
+        .then((res) => {
+          console.log(JSON.stringify(res.data));
 
-        // close the modal after meeting is added successfully
-        modalHideHandler();
-        // show and hide alert after 5 seconds
-        alertShowHandler("success", "Meeting was added successfully.");
-        alertHideTimeout(5000);
-        dispatch(alertActions.showLoader(false));
-        dispatch(meetingActions.resetStartTimes());
-      })
-      .catch((err) => {
-        console.error(err);
-        alertShowHandler("danger", "There was an error adding a meeting.");
-        alertHideTimeout(5000);
-        dispatch(alertActions.showLoader(false));
-      });
+          // close the modal after meeting is added successfully
+          modalHideHandler();
+          // show and hide alert after 5 seconds
+          alertShowHandler("success", "Meeting was added successfully.");
+          alertHideTimeout(5000);
+          dispatch(alertActions.showLoader(false));
+          dispatch(meetingActions.resetStartTimes());
+          setEmailsState([]);
+        })
+        .catch((err) => {
+          console.error(err);
+          alertShowHandler("danger", "There was an error adding a meeting.");
+          alertHideTimeout(5000);
+          dispatch(alertActions.showLoader(false));
+        });
+    } else {
+      dispatch(meetingActions.setTitleFieldErr(true));
+      dispatch(alertActions.showLoader(false));
+    }
   };
 
   const startTimeChangeHandler = (e) => {
@@ -113,6 +126,55 @@ const AddMeetingModal = forwardRef((props, ref) => {
 
     dispatch(meetingActions.setSelectedStartTime(startDateTime));
     dispatch(meetingActions.setMeetingStartTime(startDateTime));
+  };
+
+  const titleInputChangeHandler = (e) => {
+    setTitleVal(e.target.value);
+    if (e.target.value !== "") {
+      setTitleValid(true);
+    } else {
+      setTitleValid(false);
+    }
+  };
+
+  const descInputChangeHandler = (e) => {
+    setDescVal(e.target.value);
+  };
+
+  const attendeesInputChangeHandler = (e) => {
+    setAttendeesVal(e.target.value);
+  };
+
+  const validateEmail = (email) => {
+    return email
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  const handleEmailKeyDown = (e) => {
+    if (["Enter", "Tab", ","].includes(e.key)) {
+      e.preventDefault();
+
+      let email = e.target.value;
+
+      if (validateEmail(email)) {
+        setEmailsState((emailsState) => [...emailsState, email]);
+
+        dispatch(meetingActions.setEmailFieldErr(false));
+
+        setAttendeesVal("");
+        // console.log(email);
+      } else {
+        console.log("not a valid email");
+        dispatch(meetingActions.setEmailFieldErr(true));
+      }
+    }
+  };
+
+  const handleEmailDelete = (deleteEmail) => {
+    setEmailsState(emailsState.filter((email) => email !== deleteEmail));
   };
 
   return (
@@ -127,9 +189,6 @@ const AddMeetingModal = forwardRef((props, ref) => {
           onSubmit={methods.handleSubmit(handleFormSubmit)}
         >
           <Input
-            validations={{
-              required: true,
-            }}
             ref={ref}
             label="Meeting Name"
             id="newMeetingName"
@@ -137,12 +196,17 @@ const AddMeetingModal = forwardRef((props, ref) => {
             name="newMeetingName"
             placeholder="Meeting Name"
             invalidText="Please enter a name for the meeting."
+            onChange={titleInputChangeHandler}
+            value={titleVal}
           />
           <TextArea
             id="meetingDescriptionField"
             name="meetingDescriptionField"
             label="Description"
             placeholder="Please describe what this meeting is about"
+            rows={3}
+            onChange={descInputChangeHandler}
+            value={descVal}
             ref={ref}
           />
           <TimeSelect
@@ -165,11 +229,35 @@ const AddMeetingModal = forwardRef((props, ref) => {
           <TextArea
             id="meetingAttendeesField"
             name="meetingAttendeesField"
-            label="Attendees"
-            placeholder="Add a comma seperated list of emails"
-            invocation="add"
+            label="Attendees (Enter an email and press 'Enter', 'Tab', or ',')"
+            placeholder="Add one valid email at a time."
+            invalidText="This is not a valid email."
+            rows={1}
+            onKeyDown={handleEmailKeyDown}
+            onChange={attendeesInputChangeHandler}
+            value={attendeesVal}
             ref={ref}
           />
+          <div className="email-badge-container">
+            {emailsState.map((email) => {
+              return (
+                <span
+                  className="badge rounded-pill email-pill"
+                  key={email + new Date()}
+                >
+                  {email}
+
+                  <button
+                    type="button"
+                    className="btn btn-light pill-btn"
+                    onClick={() => handleEmailDelete(email)}
+                  >
+                    <X />
+                  </button>
+                </span>
+              );
+            })}
+          </div>
           <Button
             type="submit"
             id="addNewMeetingSubmitBtn"

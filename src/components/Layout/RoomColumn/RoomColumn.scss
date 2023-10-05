@@ -1,5 +1,10 @@
 #room-col {
-  background-color: #22333b;
+  background: rgb(109, 114, 195);
+  background: linear-gradient(
+    0deg,
+    rgba(109, 114, 195, 1) 0%,
+    rgba(34, 195, 109, 1) 100%
+  );
   max-height: 93.6vh;
   overflow-y: scroll;
 

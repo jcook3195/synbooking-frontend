@@ -46,10 +46,21 @@ const MeetingScheduler = () => {
       .then((res) => {
         // reset the previous meetings state to clear the meetings
         dispatch(meetingActions.resetRoomAvailability());
-        // set the meetings
-        dispatch(meetingActions.setMeetings(res.data));
-        // update the availability
-        dispatch(meetingActions.updateRoomAvailability());
+
+        if (typeof res.data === "object") {
+          // set the meetings
+          dispatch(meetingActions.setMeetings(res.data));
+
+          // update the availability
+          dispatch(meetingActions.updateRoomAvailability());
+        } else {
+          // reset the meetings to empty
+          dispatch(meetingActions.resetMeetings());
+
+          // reset the availability by past, active, and upcoming
+          dispatch(meetingActions.updateRoomAvailability());
+        }
+
         dispatch(alertActions.showLoader(false));
       })
       .catch((err) => {
