@@ -4,6 +4,7 @@ const initialState = {
   showAlert: false,
   alertType: "danger",
   alertMessage: "Test notification.",
+  showLoader: false,
 };
 
 const alertSlice = createSlice({
@@ -21,6 +22,9 @@ const alertSlice = createSlice({
     },
     setAlertMessage(state, data) {
       state.alertMessage = data.payload;
+    },
+    showLoader(state, data) {
+      state.showLoader = data.payload;
     },
   },
 });

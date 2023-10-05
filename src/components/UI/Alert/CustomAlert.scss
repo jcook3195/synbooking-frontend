@@ -1,6 +1,6 @@
 .alert {
-  position: fixed;
-  width: 20%;
+  position: fixed !important;
+  width: 20% !important;
   right: 6%;
   z-index: 9999;
 }

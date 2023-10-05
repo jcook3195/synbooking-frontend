@@ -1,5 +1,6 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useForm, FormProvider } from "react-hook-form";
 import axios from "axios";
 
 import CustomModal from "../CustomModal";
@@ -12,23 +13,27 @@ import TimeSelect from "../../../Form/Fields/TimeSelect/TimeSelect";
 import { modalActions } from "../../../../store/modalStore";
 import { alertActions } from "../../../../store/alertStore";
 import { meetingActions } from "../../../../store/meetingStore";
+import { useLocalState } from "../../../../store/useLocalStore";
 
 import "./AddMeetingModal.scss";
 
-const AddMeetingModal = () => {
+const AddMeetingModal = forwardRef((props, ref) => {
+  // react-hook-form validations
+  const methods = useForm();
+
   // redux
   const dispatch = useDispatch();
-  const modalState = useSelector((state) => state.modals.showModal);
+  const modalState = useSelector((state) => state.modals.showAddModal);
   const selectedRoomState = useSelector((state) => state.meetings.selectedRoom);
-  const selectedStartTime = useSelector(
-    (state) => state.meetings.selectedStartTime
-  );
   const selectedMeetingDate = useSelector(
     (state) => state.meetings.selectedMeetingDate
   );
+  const selectedRoomName = useSelector(
+    (state) => state.meetings.selectedRoomName
+  );
 
   const modalHideHandler = () => {
-    dispatch(modalActions.hideModal());
+    dispatch(modalActions.hideAddModal());
   };
 
   const alertShowHandler = (type, message) => {
@@ -43,19 +48,20 @@ const AddMeetingModal = () => {
     }, interval);
   };
 
+  const [jwt, setJwt] = useLocalState("", "jwt");
   const handleFormSubmit = (e) => {
-    e.preventDefault();
-    const formFields = e.target;
-
+    dispatch(alertActions.showLoader(true));
     //let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
     let roomId = selectedRoomState;
-    let meetingName = formFields[0].value;
-    let meetingDescription = formFields[1].value;
+    let meetingName = e.newMeetingName;
+    let meetingDescription = e.meetingDescriptionField;
     let startDateTime = new Date(
-      selectedMeetingDate + " " + formFields[2].value
+      selectedMeetingDate + " " + e.meetingStartTimeSelect
     );
-    let endDateTime = new Date(selectedMeetingDate + " " + formFields[3].value);
-    let attendees = formFields[4].value;
+    let endDateTime = new Date(
+      selectedMeetingDate + " " + e.meetingEndTimeSelect
+    );
+    let attendees = e.meetingAttendeesField;
 
     let data = JSON.stringify({
       //user: loggedInUser,
@@ -73,9 +79,12 @@ const AddMeetingModal = () => {
       url: "http://localhost:8080/meetings",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `bearer ${jwt}`
       },
       data: data,
     };
+
+    console.log(e.meetingEndTimeSelect);
 
     axios
       .request(config)
@@ -87,15 +96,18 @@ const AddMeetingModal = () => {
         // show and hide alert after 5 seconds
         alertShowHandler("success", "Meeting was added successfully.");
         alertHideTimeout(5000);
+        dispatch(alertActions.showLoader(false));
+        dispatch(meetingActions.resetStartTimes());
       })
       .catch((err) => {
         console.error(err);
         alertShowHandler("danger", "There was an error adding a meeting.");
         alertHideTimeout(5000);
+        dispatch(alertActions.showLoader(false));
       });
   };
 
-  const onChangeHandler = (e) => {
+  const startTimeChangeHandler = (e) => {
     // get the selected date from the date picker and the start time, combine them into a new Date and set the state
     let startDateTime = selectedMeetingDate + " " + e.target.value;
 
@@ -105,58 +117,78 @@ const AddMeetingModal = () => {
 
   return (
     <CustomModal
-      heading="Add a Meeting"
+      heading={"Add a meeting for room " + selectedRoomName}
       show={modalState}
       onHide={modalHideHandler}
     >
-      <Form formId="addMeetingForm" onSubmit={handleFormSubmit}>
-        <Input
-          label="Meeting Name"
-          id="newMeetingName"
-          type="text"
-          name="newMeetingName"
-          placeholder="Meeting Name"
-        />
-        <TextArea
-          id="meetingDescriptionField"
-          label="Description"
-          placeholder="Please describe what this meeting is about"
-        />
-        <TimeSelect
-          id="meetingStartTimeSelect"
-          label="Start Time"
-          startEnd="start"
-          onChange={onChangeHandler}
-        />
-        <TimeSelect
-          id="meetingEndTimeSelect"
-          label="End Time"
-          startEnd="end"
-          startTime={selectedStartTime}
-        />
-        <TextArea
-          id="meetingAttendeesField"
-          label="Attendees"
-          placeholder="Add a comma seperated list of emails"
-        />
-        <Button
-          type="submit"
-          id="addNewMeetingSubmitBtn"
-          classNames="btn-primary form-btn-first"
+      <FormProvider {...methods}>
+        <Form
+          formId="addMeetingForm"
+          onSubmit={methods.handleSubmit(handleFormSubmit)}
         >
-          Add Meeting
-        </Button>
-        <Button
-          type="button"
-          id="cancelAddNewMeetingBtn"
-          classNames="btn-secondary"
-          onClick={modalHideHandler}
-        >
-          Cancel
-        </Button>
-      </Form>
+          <Input
+            validations={{
+              required: true,
+            }}
+            ref={ref}
+            label="Meeting Name"
+            id="newMeetingName"
+            type="text"
+            name="newMeetingName"
+            placeholder="Meeting Name"
+            invalidText="Please enter a name for the meeting."
+          />
+          <TextArea
+            id="meetingDescriptionField"
+            name="meetingDescriptionField"
+            label="Description"
+            placeholder="Please describe what this meeting is about"
+            ref={ref}
+          />
+          <TimeSelect
+            id="meetingStartTimeSelect"
+            name="meetingStartTimeSelect"
+            label="Start Time"
+            startEnd="start"
+            invocation="add"
+            onChange={startTimeChangeHandler}
+            ref={ref}
+          />
+          <TimeSelect
+            id="meetingEndTimeSelect"
+            name="meetingEndTimeSelect"
+            label="End Time"
+            startEnd="end"
+            invocation="add"
+            ref={ref}
+          />
+          <TextArea
+            id="meetingAttendeesField"
+            name="meetingAttendeesField"
+            label="Attendees"
+            placeholder="Add a comma seperated list of emails"
+            invocation="add"
+            ref={ref}
+          />
+          <Button
+            type="submit"
+            id="addNewMeetingSubmitBtn"
+            classNames="btn-primary form-btn-first"
+          >
+            Add Meeting
+          </Button>
+          <Button
+            type="button"
+            id="cancelAddNewMeetingBtn"
+            classNames="btn-secondary"
+            onClick={modalHideHandler}
+          >
+            Cancel
+          </Button>
+        </Form>
+      </FormProvider>
     </CustomModal>
   );
-};
+});
 
 export default AddMeetingModal;

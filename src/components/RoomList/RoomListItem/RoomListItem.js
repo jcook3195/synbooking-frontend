@@ -17,7 +17,7 @@ const RoomsListItem = (props) => {
   const dispatch = useDispatch();
 
   const modalShowButtonClickHandler = (roomId) => {
-    dispatch(modalActions.showModal());
+    dispatch(modalActions.showAddModal());
     dispatch(meetingActions.setSelectedRoom(roomId));
   };
 

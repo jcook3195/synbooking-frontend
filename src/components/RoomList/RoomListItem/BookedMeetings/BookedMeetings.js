@@ -4,10 +4,11 @@ import { useSelector } from "react-redux";
 import BookedMeeting from "./BookedMeeting/BookedMeeting";
 
 const BookedMeetings = (props) => {
-  let header;
+  let header = "No upcoming meetings.";
 
   // redux
   //const users = useSelector((state) => state.auth.users);
+  //console.log(users);
   const meetings = useSelector((state) => state.meetings.meetings);
   const now = new Date();
 
@@ -37,15 +38,32 @@ const BookedMeetings = (props) => {
 
       return (
         <BookedMeeting
-          key={meeting[1].user + startHrs + startMins}
+          key={
+            meeting[1].user +
+            props.roomId +
+            meeting[1].id +
+            endHrs +
+            startMins +
+            startHrs
+          }
           //user={users[meeting[1].user]}
           startTime={startHrs + ":" + startMins}
           endTime={endHrs + ":" + endMins}
         />
       );
     } else {
-      header = "No meetings for the day.";
-      return <></>;
+      return (
+        <span
+          key={
+            meeting[1].user +
+            meeting[1].id +
+            props.roomId +
+            startHrs +
+            endMins +
+            endHrs
+          }
+        ></span>
+      );
     }
   });
 

@@ -1,7 +1,41 @@
 #room-col {
   background-color: #22333b;
+  max-height: 93.6vh;
+  overflow-y: scroll;
 
   h2 {
     color: #fff;
+  }
+
+  #myMeetings {
+    .meetings-list {
+      background-color: #fff;
+      border-radius: 10px;
+
+      .my-meeting {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid lightgray;
+
+        &:last-of-type {
+          border-bottom: none;
+        }
+
+        h6,
+        p {
+          color: #000;
+        }
+
+        button {
+          &.btn-primary {
+            margin-right: 6px;
+          }
+        }
+      }
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+    }
   }
 }
