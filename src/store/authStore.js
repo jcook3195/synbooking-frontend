@@ -1,15 +1,7 @@
 import { Axios } from "axios";
 import { useLocalState } from "../store/useLocalStore";
 import { useEffect, useState } from "react"
-
-
-// async function UserReturn () {
-//   const [jwt, setJwt] = useLocalState("", "jwt");
-
-//   const response = await fetch("http://localhost:8080/users");
-//   var data = await response.json();
-//   console.log(data);
-// }
+import axios from "axios";
 
 
 // export {UserReturn}

@@ -28,6 +28,44 @@ const MeetingScheduler = () => {
   );
   const [jwt, setJwt] = useLocalState("", "jwt");
 
+  
+
+  useEffect(() => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: "http://localhost:8080/users",
+      headers: {
+        "Content-Type": "applicaiton/json",
+        Authorization: `bearer ${jwt}`,
+      },
+    };
+
+    axios
+      .request(config)
+      .then((res) => {
+        for(let i = 0; i < res.data.length; i++){
+          let users = {
+            1: `${res.data[i].firstname}`
+          }
+          console.log(users);
+          // if(localStorage.getItem('username') == res.data[i].username){
+          //   console.log("They compare");
+          //   console.log(localStorage.getItem('username') + res.data[i].username);
+
+          //   break;
+          // }
+          // else{
+          //   console.log("User not found");
+          // }
+        }
+        // console.log(res.data);
+        // console.log(res.data[3]);
+        // console.log(res.data[3].firstname);
+        // console.log(localStorage.getItem('username'));
+      })
+  })
+
   useEffect(() => {
 
     // grab all the meetings for the set date
@@ -46,21 +84,10 @@ const MeetingScheduler = () => {
       .then((res) => {
         // reset the previous meetings state to clear the meetings
         dispatch(meetingActions.resetRoomAvailability());
-
-        if (typeof res.data === "object") {
-          // set the meetings
-          dispatch(meetingActions.setMeetings(res.data));
-
-          // update the availability
-          dispatch(meetingActions.updateRoomAvailability());
-        } else {
-          // reset the meetings to empty
-          dispatch(meetingActions.resetMeetings());
-
-          // reset the availability by past, active, and upcoming
-          dispatch(meetingActions.updateRoomAvailability());
-        }
-
+        // set the meetings
+        dispatch(meetingActions.setMeetings(res.data));
+        // update the availability
+        dispatch(meetingActions.updateRoomAvailability());
         dispatch(alertActions.showLoader(false));
       })
       .catch((err) => {
@@ -68,6 +95,7 @@ const MeetingScheduler = () => {
         dispatch(alertActions.showLoader(false));
       });
   });
+
 
   return (
     <div id="meeting-scheduler">

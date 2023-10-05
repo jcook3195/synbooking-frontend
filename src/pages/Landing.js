@@ -36,6 +36,8 @@ const Landing = () =>{
       .then(([body, headers]) => {
         const authValue = headers.get("authorization");
         localStorage.setItem('jwt', authValue);
+        const usernameValue = username;
+        localStorage.setItem('username', usernameValue);
         navigate("/");
       }).catch((message) => {
         alert(message);
