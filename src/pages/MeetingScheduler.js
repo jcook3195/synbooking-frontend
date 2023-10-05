@@ -13,7 +13,8 @@ import CustomAlert from "../components/UI/Alert/CustomAlert";
 
 import { meetingActions } from "../store/meetingStore";
 import { alertActions } from "../store/alertStore";
-import { useLocalState } from "../store/authStore";
+import { useLocalState } from "../store/useLocalStore";
+import {UserReturn} from "../store/authStore";
 
 const MeetingScheduler = () => {
   const navigate = useNavigate();

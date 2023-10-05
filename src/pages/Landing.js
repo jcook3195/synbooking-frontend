@@ -1,5 +1,5 @@
 import React from "react"
-import { useLocalState } from "../store/authStore";
+import { useLocalState } from "../store/useLocalStore";
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react"
 

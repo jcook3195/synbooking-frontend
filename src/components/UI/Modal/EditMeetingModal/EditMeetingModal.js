@@ -13,6 +13,7 @@ import TimeSelect from "../../../Form/Fields/TimeSelect/TimeSelect";
 import { modalActions } from "../../../../store/modalStore";
 import { alertActions } from "../../../../store/alertStore";
 import { meetingActions } from "../../../../store/meetingStore";
+import { useLocalState } from "../../../../store/useLocalStore";
 
 import "./EditMeetingModal.scss";
 
@@ -43,6 +44,7 @@ const EditMeetingModal = forwardRef((props, ref) => {
     (state) => state.meetings.selectedEditMeetingDate
   );
 
+  const [jwt, setJwt] = useLocalState("", "jwt");
   useEffect(() => {
     // let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
     dispatch(alertActions.showLoader(true));
@@ -52,6 +54,9 @@ const EditMeetingModal = forwardRef((props, ref) => {
       let config = {
         method: "get",
         url: "http://localhost:8080/meetings/id/" + selectedMeeting,
+        headers:{
+          Authorization: `bearer ${jwt}`
+        }
       };
 
       axios
@@ -144,7 +149,7 @@ const EditMeetingModal = forwardRef((props, ref) => {
 
   const handleFormSubmit = (e) => {
     dispatch(alertActions.showLoader(true));
-    let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
+    //let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
     let roomId = selectedRoomState;
     let meetingName = e.editMeetingName;
     let meetingDescription = e.editMeetingDescriptionField;
@@ -158,7 +163,7 @@ const EditMeetingModal = forwardRef((props, ref) => {
 
     let data = JSON.stringify({
       id: selectedMeeting,
-      user: loggedInUser,
+      //user: loggedInUser,
       room: roomId,
       title: meetingName,
       description: meetingDescription,
@@ -173,6 +178,7 @@ const EditMeetingModal = forwardRef((props, ref) => {
       url: "http://localhost:8080/meetings/" + selectedMeeting,
       headers: {
         "Content-Type": "application/json",
+        Authorization: `bearer ${jwt}`
       },
       data: data,
     };

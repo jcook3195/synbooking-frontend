@@ -7,6 +7,7 @@ import Button from "../../Button/Button";
 
 import { modalActions } from "../../../../store/modalStore";
 import { alertActions } from "../../../../store/alertStore";
+import { useLocalState } from "../../../../store/useLocalStore";
 
 import "./DeleteMeetingModal.scss";
 
@@ -40,6 +41,7 @@ const DeleteMeetingModal = () => {
     }, interval);
   };
 
+  const [jwt, setJwt] = useLocalState("", "jwt");
   const handleDeleteBtnClick = () => {
     // let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
     dispatch(alertActions.showLoader(true));
@@ -48,6 +50,9 @@ const DeleteMeetingModal = () => {
     let config = {
       method: "delete",
       url: "http://localhost:8080/meetings/" + selectedMeeting,
+      headers:{
+        Authorization: `bearer ${jwt}`
+      }
     };
 
     axios

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { meetingActions } from "../../../../store/meetingStore";
 import { alertActions } from "../../../../store/alertStore";
-import { useLocalState } from "../../../../store/authStore";
+import { useLocalState } from "../../../../store/useLocalStore";
 
 const DateInput = (props) => {
   // redux

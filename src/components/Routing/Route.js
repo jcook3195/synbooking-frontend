@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocalState } from "../../store/authStore";
+import { useLocalState } from "../../store/useLocalStore";
 import { Navigate } from "react-router-dom";
 
 const PrivateRoute = ({children}) => {

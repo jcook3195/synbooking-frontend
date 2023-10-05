@@ -13,6 +13,7 @@ import TimeSelect from "../../../Form/Fields/TimeSelect/TimeSelect";
 import { modalActions } from "../../../../store/modalStore";
 import { alertActions } from "../../../../store/alertStore";
 import { meetingActions } from "../../../../store/meetingStore";
+import { useLocalState } from "../../../../store/useLocalStore";
 
 import "./AddMeetingModal.scss";
 
@@ -47,9 +48,10 @@ const AddMeetingModal = forwardRef((props, ref) => {
     }, interval);
   };
 
+  const [jwt, setJwt] = useLocalState("", "jwt");
   const handleFormSubmit = (e) => {
     dispatch(alertActions.showLoader(true));
-    let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
+    //let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
     let roomId = selectedRoomState;
     let meetingName = e.newMeetingName;
     let meetingDescription = e.meetingDescriptionField;
@@ -62,7 +64,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
     let attendees = e.meetingAttendeesField;
 
     let data = JSON.stringify({
-      user: loggedInUser,
+      //user: loggedInUser,
       room: roomId,
       title: meetingName,
       description: meetingDescription,
@@ -77,6 +79,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
       url: "http://localhost:8080/meetings",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `bearer ${jwt}`
       },
       data: data,
     };

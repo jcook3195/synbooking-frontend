@@ -1,20 +1,18 @@
+import { Axios } from "axios";
+import { useLocalState } from "../store/useLocalStore";
 import { useEffect, useState } from "react"
-function useLocalState(defaultValue, key){
-  const [value, setValue] = useState(() => {
-    const localStorageValue = localStorage.getItem(key)
-
-    return localStorageValue !== null ? (localStorageValue) : defaultValue;
-  });
-
-  useEffect(()=>{
-   localStorage.setItem(key, (value)); 
-  }, [key, value]);
-
-  return[value, setValue];
-}
 
 
-export {useLocalState}
+// async function UserReturn () {
+//   const [jwt, setJwt] = useLocalState("", "jwt");
+
+//   const response = await fetch("http://localhost:8080/users");
+//   var data = await response.json();
+//   console.log(data);
+// }
+
+
+// export {UserReturn}
 
 // import { createSlice } from "@reduxjs/toolkit";
 
