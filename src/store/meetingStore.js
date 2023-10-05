@@ -140,10 +140,12 @@ const meetingSlice = createSlice({
       let newMeetings = state.meetings;
       newMeetings = data.payload;
 
-      // sort the meetings to put the most recent meetings at the bottom of the list, this prevents errors with the loop for availablility and status messages
-      newMeetings.sort((a, b) => {
-        return new Date(b.startDateTime) - new Date(a.startDateTime);
-      });
+      if (typeof data.payload === "object") {
+        // sort the meetings to put the most recent meetings at the bottom of the list, this prevents errors with the loop for availablility and status messages
+        newMeetings.sort((a, b) => {
+          return new Date(b.startDateTime) - new Date(a.startDateTime);
+        });
+      }
 
       // set the state with the new sorted object
       state.meetings = newMeetings;
@@ -194,9 +196,13 @@ const meetingSlice = createSlice({
     },
     updateRoomAvailability(state) {
       // get current state of meetings and rooms
-      let meetings = current(state.meetings);
-
+      let meetings = state.meetings;
       let rooms = current(state.rooms);
+
+      if (JSON.stringify(meetings) === "{}" || typeof meetings !== "string") {
+        // as long as there is no meetings, get the current
+        meetings = current(state.meetings);
+      }
 
       // new instance of rooms, past, active, and upcoming meetings for state updates and immutability
       let newRooms = state.rooms;
@@ -204,121 +210,113 @@ const meetingSlice = createSlice({
       let newActiveMeetings = state.activeMeetings;
       let newUpcomingMeetings = state.upcomingMeetings;
 
-      // loop through meetings and rooms to compare ids and build past, active, and upcoming states
-      Object.values(meetings).forEach((meetingVal) => {
-        // do some magic with the current time, start time, and end time of meetings so they are mathematically comparable
-        let startTime = meetingVal.startDateTime.split("T")[1];
-        let endTime = meetingVal.endDateTime.split("T")[1];
-
-        let startTimeMinusTrail = startTime.split(".")[0];
-        let endTimeMinusTrail = endTime.split(".")[0];
-
-        let currentDateTime = new Date();
-        let startDateTime = new Date();
-        startDateTime.setHours(startTimeMinusTrail.split(":")[0] - 4); // cheating to convert from gmt to est
-        startDateTime.setMinutes(startTimeMinusTrail.split(":")[1]);
-        startDateTime.setSeconds(startTimeMinusTrail.split(":")[2]);
-
-        let endDateTime = new Date();
-        endDateTime.setHours(endTimeMinusTrail.split(":")[0] - 4); // cheating to convert from gmt to est
-        endDateTime.setMinutes(endTimeMinusTrail.split(":")[1]);
-        endDateTime.setSeconds(endTimeMinusTrail.split(":")[2]);
-
-        // loop through all the rooms for every meeting for comparisons and updates
-        Object.entries(rooms).forEach((roomVal, key) => {
-          if (meetingVal.room === roomVal[1].id) {
-            // past meetings condition
-            if (currentDateTime > endDateTime) {
-              // code is looping multiple times, so add this to make sure it is not added to the state twice
-              const found = newPastMeetings[roomVal[0]].some(
-                (el) => el.id === meetingVal.id
-              );
-
-              if (!found) {
-                // if the meeting is not already found in the array, push it
-                newPastMeetings[roomVal[0]].push(meetingVal);
-              }
-            }
-
-            // current meetings condition
-            if (
-              currentDateTime >= startDateTime &&
-              currentDateTime <= endDateTime
-            ) {
-              // code is looping multiple times, so add this to make sure it is not added to the state twice
-              const found = newActiveMeetings[roomVal[0]].some(
-                (el) => el.id === meetingVal.id
-              );
-
-              if (!found) {
-                // if the meeting is not already found in the array, push it
-                newActiveMeetings[roomVal[0]].push(meetingVal);
-              }
-            }
-
-            // upcoming meetings condition
-            if (currentDateTime < startDateTime) {
-              // code is looping multiple times, so add this to make sure it is not added to the state twice
-              const found = newUpcomingMeetings[roomVal[0]].some(
-                (el) => el.id === meetingVal.id
-              );
-
-              if (!found) {
-                // if the meeting is not already found in the array, push it
-                newUpcomingMeetings[roomVal[0]].push(meetingVal);
-              }
-            }
-          }
+      // need this for resetting the meetings when there is a day change if there are no meetings
+      if (JSON.stringify(meetings) === "{}" || typeof meetings === "string") {
+        // no meetings, reset all the statuses of the rooms
+        Object.entries(rooms).forEach((roomVal, roomKey) => {
+          newRooms[roomVal[0]].availability = true;
+          newRooms[roomVal[0]].statusMsg = "Free for the rest of the day.";
         });
-      });
+      } else {
+        // there are some meetings, continue with business as usual
+        // loop through meetings and rooms to compare ids and build past, active, and upcoming states
+        Object.values(meetings).forEach((meetingVal) => {
+          // do some magic with the current time, start time, and end time of meetings so they are mathematically comparable
+          let startTime = meetingVal.startDateTime.split("T")[1];
+          let endTime = meetingVal.endDateTime.split("T")[1];
 
-      // console.log("PAST", current(newPastMeetings));
-      // console.log("ACTIVE", current(newActiveMeetings));
-      // console.log("UPCOMING", current(newUpcomingMeetings));
-      state.pastMeetings = newPastMeetings;
-      state.activeMeetings = newActiveMeetings;
-      state.upcomingMeetings = newUpcomingMeetings;
+          let startTimeMinusTrail = startTime.split(".")[0];
+          let endTimeMinusTrail = endTime.split(".")[0];
 
-      let compActiveMeetings = state.activeMeetings;
-      let compFutureMeetings = state.upcomingMeetings;
+          let currentDateTime = new Date();
+          let startDateTime = new Date();
+          startDateTime.setHours(startTimeMinusTrail.split(":")[0] - 4); // cheating to convert from gmt to est
+          startDateTime.setMinutes(startTimeMinusTrail.split(":")[1]);
+          startDateTime.setSeconds(startTimeMinusTrail.split(":")[2]);
 
-      // loop through the future meeting sets to update room state for status msg and availability
-      Object.entries(compFutureMeetings).forEach((futureMeetVal, key) => {
-        // loop through current meetings to compare. if there is a current meeting in this room then don't update the state for the future meetings
-        let futureMeetingSet = current(futureMeetVal[1]);
-        // loop through the array of meeting objects
-        Object.values(futureMeetingSet).forEach((fms) => {
+          let endDateTime = new Date();
+          endDateTime.setHours(endTimeMinusTrail.split(":")[0] - 4); // cheating to convert from gmt to est
+          endDateTime.setMinutes(endTimeMinusTrail.split(":")[1]);
+          endDateTime.setSeconds(endTimeMinusTrail.split(":")[2]);
+
+          // loop through all the rooms for every meeting for comparisons and updates
+          Object.entries(rooms).forEach((roomVal, key) => {
+            if (meetingVal.room === roomVal[1].id) {
+              // past meetings condition
+              if (currentDateTime > endDateTime) {
+                // code is looping multiple times, so add this to make sure it is not added to the state twice
+                const found = newPastMeetings[roomVal[0]].some(
+                  (el) => el.id === meetingVal.id
+                );
+
+                if (!found) {
+                  // if the meeting is not already found in the array, push it
+                  newPastMeetings[roomVal[0]].push(meetingVal);
+                }
+              }
+
+              // current meetings condition
+              if (
+                currentDateTime >= startDateTime &&
+                currentDateTime <= endDateTime
+              ) {
+                // code is looping multiple times, so add this to make sure it is not added to the state twice
+                const found = newActiveMeetings[roomVal[0]].some(
+                  (el) => el.id === meetingVal.id
+                );
+
+                if (!found) {
+                  // if the meeting is not already found in the array, push it
+                  newActiveMeetings[roomVal[0]].push(meetingVal);
+                }
+              }
+
+              // upcoming meetings condition
+              if (currentDateTime < startDateTime) {
+                // code is looping multiple times, so add this to make sure it is not added to the state twice
+                const found = newUpcomingMeetings[roomVal[0]].some(
+                  (el) => el.id === meetingVal.id
+                );
+
+                if (!found) {
+                  // if the meeting is not already found in the array, push it
+                  newUpcomingMeetings[roomVal[0]].push(meetingVal);
+                }
+              }
+            }
+          });
+        });
+
+        // console.log("PAST", current(newPastMeetings));
+        // console.log("ACTIVE", current(newActiveMeetings));
+        // console.log("UPCOMING", current(newUpcomingMeetings));
+        state.pastMeetings = newPastMeetings;
+        state.activeMeetings = newActiveMeetings;
+        state.upcomingMeetings = newUpcomingMeetings;
+
+        let compActiveMeetings = state.activeMeetings;
+        let compFutureMeetings = state.upcomingMeetings;
+
+        // loop through the future meeting sets to update room state for status msg and availability
+        Object.entries(compFutureMeetings).forEach((futureMeetVal, key) => {
           // loop through current meetings to compare. if there is a current meeting in this room then don't update the state for the future meetings
-          Object.entries(compActiveMeetings).forEach((activeMeetVal, nKey) => {
-            let activeMeetingSet = current(activeMeetVal[1]);
+          let futureMeetingSet = current(futureMeetVal[1]);
+          // loop through the array of meeting objects
+          Object.values(futureMeetingSet).forEach((fms) => {
+            // loop through current meetings to compare. if there is a current meeting in this room then don't update the state for the future meetings
+            Object.entries(compActiveMeetings).forEach(
+              (activeMeetVal, nKey) => {
+                let activeMeetingSet = current(activeMeetVal[1]);
 
-            // now determine if there are any active meetings in the same room for the day
-            // if there are, a special loop needs to be run to make sure the future meetings do not wrongly display the status
-            // if there are no currently active meetings, just go ahead and display the future meeting
+                // now determine if there are any active meetings in the same room for the day
+                // if there are, a special loop needs to be run to make sure the future meetings do not wrongly display the status
+                // if there are no currently active meetings, just go ahead and display the future meeting
 
-            if (
-              !Array.isArray(current(activeMeetVal[1])) ||
-              !current(activeMeetVal[1]).length
-            ) {
-              // if the array is empty. That means there are no active meetings in the array and the future meetings can be displayed
-              let prettyStartTime = new Date(fms.startDateTime);
-              // adding an extra 0 for minute formatting if only one number
-              let startHrs = prettyStartTime.getHours();
-              let startMins = prettyStartTime.getMinutes();
-              if (startHrs.toString().length < 2) {
-                startHrs = "0" + startHrs;
-              }
-              if (startMins.toString().length < 2) {
-                startMins = startMins + "0";
-              }
-              newRooms[futureMeetVal[0].toString()].statusMsg =
-                "Free Until " + startHrs + ":" + startMins;
-              newRooms[futureMeetVal[0].toString()].availability = true;
-            } else {
-              // there are some active meetings. run the loop to make sure those are not displayed
-              Object.values(activeMeetingSet).forEach((ams) => {
-                if (!(fms.room === ams.room)) {
-                  // if there is not an active meeting in the same room that there is a future meeting
+                if (
+                  !Array.isArray(current(activeMeetVal[1])) ||
+                  !current(activeMeetVal[1]).length
+                ) {
+                  // if the array is empty. That means there are no active meetings in the array and the future meetings can be displayed
                   let prettyStartTime = new Date(fms.startDateTime);
                   // adding an extra 0 for minute formatting if only one number
                   let startHrs = prettyStartTime.getHours();
@@ -332,40 +330,57 @@ const meetingSlice = createSlice({
                   newRooms[futureMeetVal[0].toString()].statusMsg =
                     "Free Until " + startHrs + ":" + startMins;
                   newRooms[futureMeetVal[0].toString()].availability = true;
+                } else {
+                  // there are some active meetings. run the loop to make sure those are not displayed
+                  Object.values(activeMeetingSet).forEach((ams) => {
+                    if (!(fms.room === ams.room)) {
+                      // if there is not an active meeting in the same room that there is a future meeting
+                      let prettyStartTime = new Date(fms.startDateTime);
+                      // adding an extra 0 for minute formatting if only one number
+                      let startHrs = prettyStartTime.getHours();
+                      let startMins = prettyStartTime.getMinutes();
+                      if (startHrs.toString().length < 2) {
+                        startHrs = "0" + startHrs;
+                      }
+                      if (startMins.toString().length < 2) {
+                        startMins = startMins + "0";
+                      }
+                      newRooms[futureMeetVal[0].toString()].statusMsg =
+                        "Free Until " + startHrs + ":" + startMins;
+                      newRooms[futureMeetVal[0].toString()].availability = true;
+                    }
+                  });
                 }
-              });
-            }
+              }
+            );
           });
         });
-      });
 
-      // now just the active meetings. important to do these last since they have highest priority
-      Object.entries(compActiveMeetings).forEach((activeMeetVal, nKey) => {
-        let activeMeetingSet = current(activeMeetVal[1]);
-        // loop through each array of meeting objects
-        Object.values(activeMeetingSet).forEach((ams) => {
-          // if there is not an active meeting in the same room that there is a future meeting
-          let prettyEndTime = new Date(ams.endDateTime);
-          // adding an extra 0 for minute formatting if only one number
-          let endHrs = prettyEndTime.getHours();
-          let endMins = prettyEndTime.getMinutes();
+        // now just the active meetings. important to do these last since they have highest priority
+        Object.entries(compActiveMeetings).forEach((activeMeetVal, nKey) => {
+          let activeMeetingSet = current(activeMeetVal[1]);
+          // loop through each array of meeting objects
+          Object.values(activeMeetingSet).forEach((ams) => {
+            // if there is not an active meeting in the same room that there is a future meeting
+            let prettyEndTime = new Date(ams.endDateTime);
+            // adding an extra 0 for minute formatting if only one number
+            let endHrs = prettyEndTime.getHours();
+            let endMins = prettyEndTime.getMinutes();
 
-          if (endHrs.toString().length < 2) {
-            endHrs = "0" + endHrs;
-          }
-          if (endMins.toString().length < 2) {
-            endMins = endMins + "0";
-          }
-          newRooms[activeMeetVal[0].toString()].statusMsg =
-            "Booked Until " + endHrs + ":" + endMins;
-          newRooms[activeMeetVal[0].toString()].availability = false;
+            if (endHrs.toString().length < 2) {
+              endHrs = "0" + endHrs;
+            }
+            if (endMins.toString().length < 2) {
+              endMins = endMins + "0";
+            }
+            newRooms[activeMeetVal[0].toString()].statusMsg =
+              "Booked Until " + endHrs + ":" + endMins;
+            newRooms[activeMeetVal[0].toString()].availability = false;
+          });
         });
-      });
+      }
 
       state.rooms = newRooms;
-
-      // loop through active meetings
-      // update room status and availability
     },
     resetRoomAvailability(state) {
       // loop friendly version
@@ -422,6 +437,9 @@ const meetingSlice = createSlice({
     },
     setEmailFieldErr(state, data) {
       state.emailFieldErr = data.payload;
+    },
+    resetMeetings(state) {
+      state.meetings = {};
     },
   },
 });

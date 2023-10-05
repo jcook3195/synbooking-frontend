@@ -34,7 +34,7 @@ const DateInput = (props) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: "http://localhost:8080/meetings/" + selectedMeetingDate,
+      url: "http://localhost:8080/meetings/" + e.target.value,
       headers: {
         "Content-Type": "application/json",
       },
