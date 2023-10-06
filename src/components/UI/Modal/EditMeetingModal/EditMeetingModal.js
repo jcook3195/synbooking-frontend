@@ -21,9 +21,11 @@ const EditMeetingModal = forwardRef((props, ref) => {
   const [emailsState, setEmailsState] = useState([]);
   const [titleVal, setTitleVal] = useState("");
   const [descVal, setDescVal] = useState("");
-  const [startTimeVal, setStartTimeVal] = useState("");
-  const [endTimeVal, setEndTimeVal] = useState("");
+  const [startTimeVal, setStartTimeVal] = useState();
+  const [endTimeVal, setEndTimeVal] = useState();
   const [attendeesVal, setAttendeesVal] = useState("");
+  const [titleValid, setTitleValid] = useState(false);
+  const [endTimeInteracted, setEndTimeInteracted] = useState(false);
 
   // react-hook-form validations
   const methods = useForm();
@@ -124,11 +126,27 @@ const EditMeetingModal = forwardRef((props, ref) => {
   };
 
   const endTimeInputChangeHandler = (e) => {
+    let endDateTime = selectedMeetingDate + " " + e.target.value;
+    dispatch(meetingActions.setSelectedEndTime(endDateTime));
     setEndTimeVal(e.target.value);
+    setEndTimeInteracted(true);
   };
 
   const modalHideHandler = () => {
     dispatch(modalActions.hideEditModal());
+
+    setTitleVal("");
+    setDescVal("");
+    setAttendeesVal("");
+    setEmailsState([]);
+  };
+
+  const modalShowHandler = () => {
+    let startSelect = document.getElementById("editMeetingStartTimeSelect");
+    let endSelect = document.getElementById("editMeetingEndTimeSelect");
+
+    setStartTimeVal(startSelect[0].value);
+    setEndTimeVal(endSelect[0].value);
   };
 
   const alertShowHandler = (type, message) => {
@@ -146,15 +164,26 @@ const EditMeetingModal = forwardRef((props, ref) => {
   const handleFormSubmit = (e) => {
     dispatch(alertActions.showLoader(true));
     let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
+    let endSelect = document.getElementById("editMeetingEndTimeSelect");
     let roomId = selectedRoomState;
     let meetingName = e.editMeetingName;
     let meetingDescription = e.editMeetingDescriptionField;
     let startDateTime = new Date(
       selectedMeetingDate + " " + e.editMeetingStartTimeSelect
     );
-    let endDateTime = new Date(
-      selectedMeetingDate + " " + e.editMeetingEndTimeSelect
-    );
+
+    let endDateTime;
+
+    // check if the end time select was interacted with, and if it was not then instead of just grabbing the value from the event
+    // select the very first option in the drop down list
+    if (endTimeInteracted) {
+      endDateTime = new Date(
+        selectedMeetingDate + " " + e.meetingEndTimeSelect
+      );
+    } else {
+      endDateTime = new Date(selectedMeetingDate + " " + endSelect[0].value);
+    }
+
     let attendees = emailsState.toString();
 
     let data = JSON.stringify({
@@ -178,37 +207,50 @@ const EditMeetingModal = forwardRef((props, ref) => {
       data: data,
     };
 
-    console.log(config.url);
+    if (titleValid) {
+      dispatch(meetingActions.setTitleFieldErr(false));
+      setEndTimeInteracted(false);
 
-    axios
-      .request(config)
-      .then((res) => {
-        console.log(JSON.stringify(res.data));
+      axios
+        .request(config)
+        .then((res) => {
+          console.log(JSON.stringify(res.data));
 
-        // close the modal after meeting is update successfully
-        modalHideHandler();
-        // show and hide alert after 5 seconds
-        alertShowHandler("success", "Meeting was updated successfully.");
-        alertHideTimeout(5000);
-        // dispatch(meetingActions.setEditingActive(false));
-        dispatch(alertActions.showLoader(false));
-        dispatch(meetingActions.setMeetingToEdit(null));
-        dispatch(meetingActions.resetStartTimes());
-      })
-      .catch((err) => {
-        console.error(err);
-        alertShowHandler("danger", "There was an error updating a meeting.");
-        alertHideTimeout(5000);
-        dispatch(alertActions.showLoader(false));
-        dispatch(meetingActions.setMeetingToEdit(null));
-      });
+          // close the modal after meeting is update successfully
+          modalHideHandler();
+          // show and hide alert after 5 seconds
+          alertShowHandler("success", "Meeting was updated successfully.");
+          alertHideTimeout(5000);
+          // dispatch(meetingActions.setEditingActive(false));
+          dispatch(alertActions.showLoader(false));
+          dispatch(meetingActions.setMeetingToEdit(null));
+          dispatch(meetingActions.resetStartTimes());
+        })
+        .catch((err) => {
+          console.error(err);
+          alertShowHandler("danger", "There was an error updating a meeting.");
+          alertHideTimeout(5000);
+          dispatch(alertActions.showLoader(false));
+          dispatch(meetingActions.setMeetingToEdit(null));
+        });
+    } else {
+      dispatch(meetingActions.setTitleFieldErr(true));
+      dispatch(alertActions.showLoader(false));
+    }
+  };
+
+  const titleInputChangeHandler = (e) => {
+    setTitleVal(e.target.value);
+    if (e.target.value !== "") {
+      setTitleValid(true);
+    } else {
+      setTitleValid(false);
+    }
   };
 
   const startTimeChangeHandler = (e) => {
     // get the selected date from the date picker and the start time, combine them into a new Date and set the state
     let startDateTime = selectedMeetingDate + " " + e.target.value;
-
-    console.log(e.target.value);
 
     setStartTimeVal(e.target.value);
     dispatch(meetingActions.setSelectedStartTime(startDateTime));
@@ -228,11 +270,18 @@ const EditMeetingModal = forwardRef((props, ref) => {
       );
   };
 
+  const checkEmailDupes = (email) => {
+    let emails = emailsState;
+    console.log("checking");
+    return emails.includes(email);
+  };
+
   const handleEmailKeyDown = (e) => {
     if (["Enter", "Tab", ","].includes(e.key)) {
       e.preventDefault();
 
       let email = e.target.value;
+      console.log(checkEmailDupes(email));
 
       if (validateEmail(email)) {
         setEmailsState((emailsState) => [...emailsState, email]);
@@ -240,7 +289,6 @@ const EditMeetingModal = forwardRef((props, ref) => {
         dispatch(meetingActions.setEmailFieldErr(false));
 
         setAttendeesVal("");
-        // console.log(email);
       } else {
         console.log("not a valid email");
         dispatch(meetingActions.setEmailFieldErr(true));
@@ -276,6 +324,7 @@ const EditMeetingModal = forwardRef((props, ref) => {
       }
       show={modalState}
       onHide={modalHideHandler}
+      onShow={modalShowHandler}
     >
       {/* {JSON.stringify(editingMeeting)} */}
       <FormProvider {...methods}>
@@ -293,6 +342,7 @@ const EditMeetingModal = forwardRef((props, ref) => {
             type="text"
             name="editMeetingName"
             placeholder="Meeting Name"
+            onChange={titleInputChangeHandler}
             value={titleVal}
             invalidText="Please enter a name for the meeting."
           />

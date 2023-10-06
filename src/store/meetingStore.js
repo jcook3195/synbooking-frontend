@@ -18,11 +18,13 @@ const initialState = {
   selectedMeeting: null,
   selectedMeetingDate: todayString,
   selectedStartTime: todayString + " " + nowTimeString,
+  selectedEndTime: todayString + " " + nowTimeString,
   meetingStartTime: null,
   meetingToEdit: null,
   editingActive: false,
   titleFieldErr: false,
   emailFieldErr: false,
+  emailErrText: "This is not a valid email.",
   rooms: {
     A: {
       id: "65008c61e49aed0cfc36f0a1",
@@ -440,6 +442,12 @@ const meetingSlice = createSlice({
     },
     resetMeetings(state) {
       state.meetings = {};
+    },
+    setSelectedEndTime(state, data) {
+      state.selectedEndTime = data.payload;
+    },
+    setEmailErrText(state, data) {
+      state.emailErrText = data.payload;
     },
   },
 });
