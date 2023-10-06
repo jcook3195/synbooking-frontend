@@ -129,6 +129,7 @@ const TimeSelect = (props) => {
     timesArray.push("18:00"); // always need this end time
   }
 
+  // if there is a meeting being edited
   if (meetingToEdit !== null) {
     let start = new Date(meetingToEdit.startDateTime);
     let end = new Date(meetingToEdit.endDateTime);
@@ -179,6 +180,7 @@ const TimeSelect = (props) => {
         id={props.id}
         className={"form-select" + errClass}
         aria-label={props.label}
+        value={props.value}
         {...register(props.name, {
           onChange: props.onChange,
         })}

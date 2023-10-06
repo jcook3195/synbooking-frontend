@@ -21,8 +21,11 @@ const AddMeetingModal = forwardRef((props, ref) => {
   const [emailsState, setEmailsState] = useState([]);
   const [titleVal, setTitleVal] = useState("");
   const [descVal, setDescVal] = useState("");
+  const [startTimeSelectVal, setStartTimeSelectVal] = useState();
+  const [endTimeSelectVal, setEndTimeSelectVal] = useState();
   const [attendeesVal, setAttendeesVal] = useState("");
   const [titleValid, setTitleValid] = useState(false);
+  const [endTimeInteracted, setEndTimeInteracted] = useState(false);
 
   // react-hook-form validations
   const methods = useForm();
@@ -37,9 +40,23 @@ const AddMeetingModal = forwardRef((props, ref) => {
   const selectedRoomName = useSelector(
     (state) => state.meetings.selectedRoomName
   );
+  const emailErrText = useSelector((state) => state.meetings.emailErrText);
 
   const modalHideHandler = () => {
     dispatch(modalActions.hideAddModal());
+
+    setTitleVal("");
+    setDescVal("");
+    setAttendeesVal("");
+    setEmailsState([]);
+  };
+
+  const modalShowHandler = () => {
+    let startSelect = document.getElementById("meetingStartTimeSelect");
+    let endSelect = document.getElementById("meetingEndTimeSelect");
+
+    setStartTimeSelectVal(startSelect[0].value);
+    setEndTimeSelectVal(endSelect[0].value);
   };
 
   const alertShowHandler = (type, message) => {
@@ -58,15 +75,25 @@ const AddMeetingModal = forwardRef((props, ref) => {
     dispatch(alertActions.showLoader(true));
 
     let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
+    let endSelect = document.getElementById("meetingEndTimeSelect");
     let roomId = selectedRoomState;
     let meetingName = e.newMeetingName;
     let meetingDescription = e.meetingDescriptionField;
     let startDateTime = new Date(
       selectedMeetingDate + " " + e.meetingStartTimeSelect
     );
-    let endDateTime = new Date(
-      selectedMeetingDate + " " + e.meetingEndTimeSelect
-    );
+    let endDateTime;
+
+    // check if the end time select was interacted with, and if it was not then instead of just grabbing the value from the event
+    // select the very first option in the drop down list
+    if (endTimeInteracted) {
+      endDateTime = new Date(
+        selectedMeetingDate + " " + e.meetingEndTimeSelect
+      );
+    } else {
+      endDateTime = new Date(selectedMeetingDate + " " + endSelect[0].value);
+    }
+
     let attendees = emailsState.toString();
 
     let data = JSON.stringify({
@@ -91,6 +118,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
 
     if (titleValid) {
       dispatch(meetingActions.setTitleFieldErr(false));
+      setEndTimeInteracted(false);
 
       axios
         .request(config)
@@ -122,8 +150,17 @@ const AddMeetingModal = forwardRef((props, ref) => {
     // get the selected date from the date picker and the start time, combine them into a new Date and set the state
     let startDateTime = selectedMeetingDate + " " + e.target.value;
 
+    setStartTimeSelectVal(e.target.value);
+
     dispatch(meetingActions.setSelectedStartTime(startDateTime));
     dispatch(meetingActions.setMeetingStartTime(startDateTime));
+  };
+
+  const endTimeChangeHandler = (e) => {
+    let endDateTime = selectedMeetingDate + " " + e.target.value;
+    dispatch(meetingActions.setSelectedEndTime(endDateTime));
+    setEndTimeSelectVal(e.target.value);
+    setEndTimeInteracted(true);
   };
 
   const titleInputChangeHandler = (e) => {
@@ -151,21 +188,40 @@ const AddMeetingModal = forwardRef((props, ref) => {
       );
   };
 
+  const checkEmailDupes = (email) => {
+    let emails = emailsState;
+
+    return emails.includes(email);
+  };
+
   const handleEmailKeyDown = (e) => {
     if (["Enter", "Tab", ","].includes(e.key)) {
       e.preventDefault();
 
+      let validEmail = false;
+
       let email = e.target.value;
 
-      if (validateEmail(email)) {
+      let emailIsValid = validateEmail(email);
+      let emailDupes = checkEmailDupes(email);
+
+      if (emailIsValid || !emailDupes) {
+        validEmail = true;
+      } else if (emailIsValid) {
+        dispatch(meetingActions.setEmailErrText("This is not a valid email."));
+      } else if (emailDupes) {
+        dispatch(
+          meetingActions.setEmailErrText("This email has already been added.")
+        );
+      }
+
+      if (validEmail) {
         setEmailsState((emailsState) => [...emailsState, email]);
 
         dispatch(meetingActions.setEmailFieldErr(false));
 
         setAttendeesVal("");
-        // console.log(email);
       } else {
-        console.log("not a valid email");
         dispatch(meetingActions.setEmailFieldErr(true));
       }
     }
@@ -180,6 +236,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
       heading={"Add a meeting for room " + selectedRoomName}
       show={modalState}
       onHide={modalHideHandler}
+      onShow={modalShowHandler}
     >
       <FormProvider {...methods}>
         <Form
@@ -214,6 +271,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
             startEnd="start"
             invocation="add"
             onChange={startTimeChangeHandler}
+            value={startTimeSelectVal}
             ref={ref}
           />
           <TimeSelect
@@ -222,6 +280,8 @@ const AddMeetingModal = forwardRef((props, ref) => {
             label="End Time"
             startEnd="end"
             invocation="add"
+            onChange={endTimeChangeHandler}
+            value={endTimeSelectVal}
             ref={ref}
           />
           <TextArea
@@ -229,7 +289,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
             name="meetingAttendeesField"
             label="Attendees (Enter an email and press 'Enter', 'Tab', or ',')"
             placeholder="Add one valid email at a time."
-            invalidText="This is not a valid email."
+            invalidText={emailErrText}
             rows={1}
             onKeyDown={handleEmailKeyDown}
             onChange={attendeesInputChangeHandler}
