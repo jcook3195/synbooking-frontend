@@ -44,25 +44,34 @@ const MeetingScheduler = () => {
     axios
       .request(config)
       .then((res) => {
+        // const initialState = {
+        //   loggedIn: false,
+        //   users: {
+        //     1: "Eric01",
+        //     2: "Jordan01",
+        //     3: "Ethan01",
+        //     4: "Shelby01",
+        //     5: "Kado01",
+        //   },
+        // };
+        // console.log(initialState.users);
+        // console.log(JSON.stringify(initialState.users));
+        let usersRep = ""; 
         for(let i = 0; i < res.data.length; i++){
-          let users = {
-            1: `${res.data[i].firstname}`
+          if( i < res.data.length-1){
+            usersRep = (usersRep + `"${res.data[i].id}":"${res.data[i].username}",`);
           }
-          console.log(users);
-          // if(localStorage.getItem('username') == res.data[i].username){
-          //   console.log("They compare");
-          //   console.log(localStorage.getItem('username') + res.data[i].username);
-
-          //   break;
-          // }
-          // else{
-          //   console.log("User not found");
-          // }
+          else {
+            usersRep = (usersRep + `"${res.data[i].id}":"${res.data[i].username}"`);
+            usersRep = `{${usersRep}}`;
+          }
         }
-        // console.log(res.data);
-        // console.log(res.data[3]);
-        // console.log(res.data[3].firstname);
-        // console.log(localStorage.getItem('username'));
+        const users = JSON.parse(usersRep);
+        const initialState2 = {
+          loggedIn: false,
+          users,
+        };
+        console.log(initialState2.users);
       })
   })
 
