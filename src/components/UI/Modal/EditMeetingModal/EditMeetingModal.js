@@ -62,13 +62,17 @@ const EditMeetingModal = forwardRef((props, ref) => {
       axios
         .request(config)
         .then((res) => {
-          console.log(JSON.stringify(res.data));
+          // console.log(JSON.stringify(res.data));
           setTitleVal(res.data.title);
           setTitleValid(true);
           setDescVal(res.data.description);
 
           // dont set the attendees field value, set the state to create the badges
-          setEmailsState(res.data.attendees.split(","));
+          if (res.data.attendees === "") {
+            setEmailsState([]);
+          } else {
+            setEmailsState(res.data.attendees.split(","));
+          }
 
           dispatch(meetingActions.setMeetingToEdit(res.data));
           dispatch(meetingActions.setSelectedRoom(res.data.room));
