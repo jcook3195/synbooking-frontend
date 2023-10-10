@@ -187,7 +187,7 @@ const EditMeetingModal = forwardRef((props, ref) => {
         selectedMeetingDate + " " + e.meetingEndTimeSelect
       );
     } else {
-      endDateTime = new Date(selectedMeetingDate + " " + endSelect[0].value);
+      endDateTime = new Date(selectedMeetingDate + " " + endTimeVal);
     }
 
     let attendees = emailsState.toString();
@@ -202,6 +202,8 @@ const EditMeetingModal = forwardRef((props, ref) => {
       endDateTime: endDateTime,
       attendees: attendees,
     });
+
+    console.log(data);
 
     // update the meeting
     let config = {
