@@ -37,6 +37,7 @@ const EditMeetingModal = forwardRef((props, ref) => {
   const selectedRoomName = useSelector(
     (state) => state.meetings.selectedRoomName
   );
+  const emailErrText = useSelector((state) => state.meetings.emailErrText);
   const selectedMeeting = useSelector(
     (state) => state.meetings.selectedMeeting
   );
@@ -272,25 +273,40 @@ const EditMeetingModal = forwardRef((props, ref) => {
 
   const checkEmailDupes = (email) => {
     let emails = emailsState;
-    console.log("checking");
+
     return emails.includes(email);
   };
 
   const handleEmailKeyDown = (e) => {
-    if (["Enter", "Tab", ","].includes(e.key)) {
+    if (["Enter", ","].includes(e.key)) {
       e.preventDefault();
 
-      let email = e.target.value;
-      console.log(checkEmailDupes(email));
+      let validEmail = false;
 
-      if (validateEmail(email)) {
+      let email = e.target.value;
+
+      let emailIsValid = validateEmail(email);
+      let emailDupes = checkEmailDupes(email);
+
+      if (emailIsValid !== null) {
+        if (!emailDupes) {
+          validEmail = true;
+        } else {
+          dispatch(
+            meetingActions.setEmailErrText("This email has already been added.")
+          );
+        }
+      } else {
+        dispatch(meetingActions.setEmailErrText("This is not a valid email."));
+      }
+
+      if (validEmail) {
         setEmailsState((emailsState) => [...emailsState, email]);
 
         dispatch(meetingActions.setEmailFieldErr(false));
 
         setAttendeesVal("");
       } else {
-        console.log("not a valid email");
         dispatch(meetingActions.setEmailFieldErr(true));
       }
     }
@@ -379,8 +395,9 @@ const EditMeetingModal = forwardRef((props, ref) => {
           <TextArea
             id="editMeetingAttendeesField"
             name="editMeetingAttendeesField"
-            label="Attendees (Enter an email and press 'Enter', 'Tab', or ',')"
+            label="Attendees (Enter an email and press 'Enter' or ',')"
             placeholder="Add one valid email at a time."
+            invalidText={emailErrText}
             rows={1}
             onKeyDown={handleEmailKeyDown}
             onChange={attendeesInputChangeHandler}
