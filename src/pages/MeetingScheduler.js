@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
@@ -14,7 +14,7 @@ import CustomAlert from "../components/UI/Alert/CustomAlert";
 import { meetingActions } from "../store/meetingStore";
 import { alertActions } from "../store/alertStore";
 import { useLocalState } from "../store/useLocalStore";
-import {UserReturn} from "../store/authStore";
+import { useReturnUsers } from "../store/authStore";
 
 const MeetingScheduler = () => {
   const navigate = useNavigate();
@@ -27,53 +27,6 @@ const MeetingScheduler = () => {
     (state) => state.meetings.selectedMeetingDate
   );
   const [jwt, setJwt] = useLocalState("", "jwt");
-
-  
-
-  useEffect(() => {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: "http://localhost:8080/users",
-      headers: {
-        "Content-Type": "applicaiton/json",
-        Authorization: `bearer ${jwt}`,
-      },
-    };
-
-    axios
-      .request(config)
-      .then((res) => {
-        // const initialState = {
-        //   loggedIn: false,
-        //   users: {
-        //     1: "Eric01",
-        //     2: "Jordan01",
-        //     3: "Ethan01",
-        //     4: "Shelby01",
-        //     5: "Kado01",
-        //   },
-        // };
-        // console.log(initialState.users);
-        // console.log(JSON.stringify(initialState.users));
-        let usersRep = ""; 
-        for(let i = 0; i < res.data.length; i++){
-          if( i < res.data.length-1){
-            usersRep = (usersRep + `"${res.data[i].id}":"${res.data[i].username}",`);
-          }
-          else {
-            usersRep = (usersRep + `"${res.data[i].id}":"${res.data[i].username}"`);
-            usersRep = `{${usersRep}}`;
-          }
-        }
-        const users = JSON.parse(usersRep);
-        const initialState2 = {
-          loggedIn: false,
-          users,
-        };
-        console.log(initialState2.users);
-      })
-  })
 
   useEffect(() => {
 

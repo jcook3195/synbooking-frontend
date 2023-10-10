@@ -43,7 +43,7 @@ const DeleteMeetingModal = () => {
 
   const [jwt, setJwt] = useLocalState("", "jwt");
   const handleDeleteBtnClick = () => {
-    // let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
+    let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
     dispatch(alertActions.showLoader(true));
 
     // submit the new meeting

@@ -8,7 +8,8 @@ const BookedMeetings = (props) => {
   let body;
 
   // redux
-  //const users = useSelector((state) => state.auth.users);
+  const users = useSelector((state) => state.auth.users);
+  //console.log(useSelector((state) => state.auth.users));
   //console.log(users);
   const meetings = useSelector((state) => state.meetings.meetings);
 
@@ -43,7 +44,7 @@ const BookedMeetings = (props) => {
 
       if (meeting[1].room === props.roomId && start > now) {
         header = "Upcoming Meetings";
-
+        //console.log(meeting[1].user);
         return (
           <BookedMeeting
             key={
@@ -54,7 +55,7 @@ const BookedMeetings = (props) => {
               startMins +
               startHrs
             }
-            // user={users[meeting[1].user]}
+            user={users[meeting[1].user]}
             startTime={startHrs + ":" + startMins}
             endTime={endHrs + ":" + endMins}
           />

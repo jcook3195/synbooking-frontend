@@ -16,6 +16,7 @@ function App() {
     <React.Fragment>
       <Router>
         <Loader />
+        <Navbar />
         <Routes>
           <Route path="/" element={<PrivateRoute><MeetingScheduler /></PrivateRoute>} exact />
           <Route path="/landing" element={<Landing />} exact />

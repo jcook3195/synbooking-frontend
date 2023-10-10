@@ -48,7 +48,7 @@ const EditMeetingModal = forwardRef((props, ref) => {
 
   const [jwt, setJwt] = useLocalState("", "jwt");
   useEffect(() => {
-    // let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
+    let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
     dispatch(alertActions.showLoader(true));
 
     if (selectedMeeting !== null) {
@@ -150,7 +150,7 @@ const EditMeetingModal = forwardRef((props, ref) => {
 
   const handleFormSubmit = (e) => {
     dispatch(alertActions.showLoader(true));
-    //let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
+    let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
     let roomId = selectedRoomState;
     let meetingName = e.editMeetingName;
     let meetingDescription = e.editMeetingDescriptionField;
@@ -164,7 +164,7 @@ const EditMeetingModal = forwardRef((props, ref) => {
 
     let data = JSON.stringify({
       id: selectedMeeting,
-      //user: loggedInUser,
+      user: loggedInUser,
       room: roomId,
       title: meetingName,
       description: meetingDescription,

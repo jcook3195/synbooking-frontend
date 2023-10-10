@@ -2,6 +2,7 @@ import React from "react"
 import { useLocalState } from "../store/useLocalStore";
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react"
+import axios from "axios";
 
 const Landing = () =>{
 
@@ -36,12 +37,13 @@ const Landing = () =>{
       .then(([body, headers]) => {
         const authValue = headers.get("authorization");
         localStorage.setItem('jwt', authValue);
-        //const usernameValue = username;
-        //localStorage.setItem('username', usernameValue);
-        navigate("/");
+        //navigate("/");
       })
       .then(() => {
-        
+        const userName = username;
+        const userId = "651fe2737cf3ac332e7385db";
+        localStorage.setItem("user", JSON.stringify({ userId, userName }));
+        navigate("/");
       })
       .catch((message) => {
         alert(message);

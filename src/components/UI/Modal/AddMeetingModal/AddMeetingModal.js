@@ -58,7 +58,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
   const [jwt, setJwt] = useLocalState("", "jwt");
   const handleFormSubmit = (e) => {
     dispatch(alertActions.showLoader(true));
-    //let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
+    let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
     let roomId = selectedRoomState;
     let meetingName = e.newMeetingName;
     let meetingDescription = e.meetingDescriptionField;
@@ -71,7 +71,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
     let attendees = emailsState.toString();
 
     let data = JSON.stringify({
-      //user: loggedInUser,
+      user: loggedInUser,
       room: roomId,
       title: meetingName,
       description: meetingDescription,
