@@ -64,6 +64,7 @@ const EditMeetingModal = forwardRef((props, ref) => {
         .then((res) => {
           console.log(JSON.stringify(res.data));
           setTitleVal(res.data.title);
+          setTitleValid(true);
           setDescVal(res.data.description);
 
           // dont set the attendees field value, set the state to create the badges
