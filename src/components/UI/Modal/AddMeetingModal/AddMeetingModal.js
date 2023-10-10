@@ -195,7 +195,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
   };
 
   const handleEmailKeyDown = (e) => {
-    if (["Enter", "Tab", ","].includes(e.key)) {
+    if (["Enter", ","].includes(e.key)) {
       e.preventDefault();
 
       let validEmail = false;
@@ -205,14 +205,16 @@ const AddMeetingModal = forwardRef((props, ref) => {
       let emailIsValid = validateEmail(email);
       let emailDupes = checkEmailDupes(email);
 
-      if (emailIsValid || !emailDupes) {
-        validEmail = true;
-      } else if (emailIsValid) {
+      if (emailIsValid !== null) {
+        if (!emailDupes) {
+          validEmail = true;
+        } else {
+          dispatch(
+            meetingActions.setEmailErrText("This email has already been added.")
+          );
+        }
+      } else {
         dispatch(meetingActions.setEmailErrText("This is not a valid email."));
-      } else if (emailDupes) {
-        dispatch(
-          meetingActions.setEmailErrText("This email has already been added.")
-        );
       }
 
       if (validEmail) {
@@ -287,7 +289,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
           <TextArea
             id="meetingAttendeesField"
             name="meetingAttendeesField"
-            label="Attendees (Enter an email and press 'Enter', 'Tab', or ',')"
+            label="Attendees (Enter an email and press 'Enter' or ',')"
             placeholder="Add one valid email at a time."
             invalidText={emailErrText}
             rows={1}

@@ -44,7 +44,7 @@ const DeleteMeetingModal = () => {
     // let loggedInUser = JSON.parse(localStorage.getItem("user"))["userId"];
     dispatch(alertActions.showLoader(true));
 
-    // submit the new meeting
+    // delete the meeting
     let config = {
       method: "delete",
       url: "http://localhost:8080/meetings/" + selectedMeeting,

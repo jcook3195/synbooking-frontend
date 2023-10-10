@@ -17,7 +17,9 @@ const TextArea = (props) => {
   // check if the name of the input is contained in the error object for displaying err class and message
   // const err = Object.keys(errors).includes(props.name) ? true : false;
   const errClass =
-    emailFieldErr && props.name === "meetingAttendeesField"
+    emailFieldErr &&
+    (props.name === "meetingAttendeesField" ||
+      props.name === "editMeetingAttendeesField")
       ? " is-invalid"
       : "";
 
@@ -37,7 +39,9 @@ const TextArea = (props) => {
           onChange: props.onChange,
         })}
       ></textarea>
-      {emailFieldErr && props.name === "meetingAttendeesField" ? (
+      {emailFieldErr &&
+      (props.name === "meetingAttendeesField" ||
+        props.name === "editMeetingAttendeesField") ? (
         <div className="invalid-feedback">{props.invalidText}</div>
       ) : (
         <></>
