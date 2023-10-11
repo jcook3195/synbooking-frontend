@@ -203,8 +203,6 @@ const EditMeetingModal = forwardRef((props, ref) => {
       attendees: attendees,
     });
 
-    console.log(data);
-
     // update the meeting
     let config = {
       method: "put",

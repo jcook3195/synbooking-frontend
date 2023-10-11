@@ -48,7 +48,7 @@ const Admin = () => {
     axios
       .request(config)
       .then((res) => {
-        console.log(JSON.stringify(res.data));
+        // console.log(JSON.stringify(res.data));
 
         // show and hide alert after 5 seconds
         alertShowHandler("success", "All meetings have been deleted.");

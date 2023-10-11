@@ -53,7 +53,7 @@ const DeleteMeetingModal = () => {
     axios
       .request(config)
       .then((res) => {
-        console.log(JSON.stringify(res.data));
+        // console.log(JSON.stringify(res.data));
 
         // close the modal after meeting is deleted successfully
         modalHideHandler();
