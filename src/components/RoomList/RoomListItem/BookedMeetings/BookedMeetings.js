@@ -55,7 +55,7 @@ const BookedMeetings = (props) => {
               startMins +
               startHrs
             }
-            user={users[meeting[1].user]}
+            //user={users[meeting[1].user]}
             startTime={startHrs + ":" + startMins}
             endTime={endHrs + ":" + endMins}
           />

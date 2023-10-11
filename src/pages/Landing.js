@@ -2,6 +2,8 @@ import React from "react"
 import { useLocalState } from "../store/useLocalStore";
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react"
+import { authActions } from "../store/authStore";
+import { useDispatch } from "react-redux";
 import axios from "axios";
 
 const Landing = () =>{

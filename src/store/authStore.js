@@ -5,6 +5,38 @@ import axios from "axios";
 
 import { createSlice } from "@reduxjs/toolkit";
 
+// const useAuthStore = () => {
+//   const [jwt, setJwt] = useLocalState("", "jwt");
+
+//   let config = {
+//     method: "get",
+//     maxBodyLength: Infinity,
+//     url: "http://localhost:8080/users",
+//     headers: {
+//       "Content-Type": "application/josn",
+//       Authorization: `bearer ${jwt}`
+//     },
+//   }
+//   axios
+//   .then((res) =>{
+//     let usersRep = "";
+//     for(let i = 0; i < res.data.length; i++){
+//         if( i < res.data.length-1){
+//         usersRep = (usersRep + `"${res.data[i].id}":"${res.data[i].username}",`);
+//         }
+//         else {
+//         usersRep = (usersRep + `"${res.data[i].id}":"${res.data[i].username}"`);
+//         usersRep = `{${usersRep}}`;
+//         }
+//     }
+//     const users = JSON.parse(usersRep);
+//     const initialState = {
+//         loggedIn: false,
+//         users,
+//     };
+//   })
+// }
+
 //const [jwt, setJwt] = useLocalState("", "jwt");
 
 const jwt = localStorage.getItem("jwt");
@@ -36,12 +68,15 @@ axios
         loggedIn: false,
         users,
     };
-    console.log(initialState.users);
+    //console.log(initialState.users);
     localStorage.setItem("initial", JSON.stringify(initialState));
+    console.log(JSON.parse(localStorage.getItem("initial")));
 })
 
-const initialState = JSON.parse(localStorage.getItem("initial"));
+//const initialState = JSON.parse(localStorage.getItem("initial"));
 //console.log(initialState);
+const initialState = {}
+
 
 
 const authSlice = createSlice({

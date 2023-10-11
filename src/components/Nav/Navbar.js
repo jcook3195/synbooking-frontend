@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Button from "../UI/Button/Button";
 
 import { authActions } from "../../store/authStore";
+import { useLocalState } from "../../store/useLocalStore";
 
 import "./Navbar.scss";
 
@@ -14,6 +15,7 @@ const Navbar = () => {
   // redux
   const dispatch = useDispatch();
   const loggedIn = useSelector((state) => state.auth.loggedIn);
+  console.log(loggedIn);
 
   const logoutHandler = () => {
     dispatch(authActions.logout());
@@ -35,11 +37,6 @@ const Navbar = () => {
     const loggedInUser = localStorage.getItem("user");
     if (loggedInUser) {
       loginHandler();
-
-      // convert string user local user data back to object
-      // const usrObj = JSON.parse(loggedInUser);
-
-      // setUserName(usrObj["userName"]);
     } else {
       logoutHandler();
     }
