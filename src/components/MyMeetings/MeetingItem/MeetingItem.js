@@ -18,7 +18,6 @@ const MeetingItem = (props) => {
   };
 
   const deleteModalShowButtonCLickHanlder = (meetingId) => {
-    console.log(meetingId);
     dispatch(modalActions.showDeleteModal());
     dispatch(meetingActions.setSelectedMeeting(meetingId));
   };

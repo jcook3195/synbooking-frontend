@@ -26,6 +26,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
   const [attendeesVal, setAttendeesVal] = useState("");
   const [titleValid, setTitleValid] = useState(false);
   const [endTimeInteracted, setEndTimeInteracted] = useState(false);
+  const [startTimeInteracted, setStartTimeInteracted] = useState(false);
 
   // react-hook-form validations
   const methods = useForm();
@@ -151,6 +152,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
     let startDateTime = selectedMeetingDate + " " + e.target.value;
 
     setStartTimeSelectVal(e.target.value);
+    setStartTimeInteracted(true);
 
     dispatch(meetingActions.setSelectedStartTime(startDateTime));
     dispatch(meetingActions.setMeetingStartTime(startDateTime));
@@ -275,6 +277,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
             onChange={startTimeChangeHandler}
             value={startTimeSelectVal}
             ref={ref}
+            startInteracted={startTimeInteracted}
           />
           <TimeSelect
             id="meetingEndTimeSelect"
@@ -284,6 +287,7 @@ const AddMeetingModal = forwardRef((props, ref) => {
             invocation="add"
             onChange={endTimeChangeHandler}
             value={endTimeSelectVal}
+            startValue={startTimeSelectVal}
             ref={ref}
           />
           <TextArea
